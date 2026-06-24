@@ -1,0 +1,109 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "../styles/global.css";
+import "../styles/tailwind.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import AuroraBackground from "../components/AuroraBackground.vue";
+import SeoHead from "../components/SeoHead.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  type?: "website" | "article";
+  activePath?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  tags?: string[];
+  noindex?: boolean;
+  wordCount?: number;
+  keywords?: string;
+}
+
+const {
+  title,
+  description,
+  type = "website",
+  activePath = "/",
+  publishedTime,
+  modifiedTime,
+  tags = [],
+  noindex = false,
+  wordCount,
+  keywords,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="font-sans antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <script is:inline>
+      const getThemePreference = () => {
+        if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+          const saved = localStorage.getItem("theme");
+          if (saved === "light" || saved === "dark") return saved;
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      };
+      const isDark = getThemePreference() === "dark";
+      document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+    </script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png" />
+    <link rel="shortcut icon" href="/favicon-96x96.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <SeoHead
+      title={title}
+      description={description}
+      type={type}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      tags={tags}
+      noindex={noindex}
+      wordCount={wordCount}
+      keywords={keywords}
+    />
+    <ClientRouter />
+  </head>
+  <body
+    id="top"
+    class="min-h-screen bg-zinc-50 text-zinc-900 transition-colors duration-200 dark:bg-zinc-950 dark:text-zinc-50"
+  >
+    <AuroraBackground client:only="vue" />
+    <SiteHeader activePath={activePath} />
+    <main>
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <!-- Scroll reveal observer — works with Astro view transitions -->
+    <script>
+      const setupReveal = () => {
+        const els = document.querySelectorAll(".reveal, .stagger");
+        if (!("IntersectionObserver" in window)) {
+          els.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
+        );
+        els.forEach((el) => io.observe(el));
+      };
+      setupReveal();
+      document.addEventListener("astro:after-swap", setupReveal);
+    </script>
+  </body>
+</html>

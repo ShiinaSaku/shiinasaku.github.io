@@ -1,0 +1,283 @@
+---
+import { Picture } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, getEntry, render } from "astro:content";
+import { getReadingTimeMinutes, getWordCount } from "../../lib/readingTime";
+import CopyPageButton from "../../components/CopyPageButton.vue";
+import ReadingProgress from "../../components/ReadingProgress.vue";
+import avatarImage from "../../assets/avatar.png";
+import { slugify } from "astro/zod";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog", ({ data }) => !data.draft);
+    return posts.map((post) => ({
+        params: { slug: post.id },
+    }));
+}
+
+const slug = Astro.params.slug;
+
+if (!slug) {
+    throw new Error("Missing blog slug parameter.");
+}
+
+const post = await getEntry("blog", slug);
+
+if (!post || post.data.draft) {
+    return Astro.redirect("/404");
+}
+
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const currentIndex = allPosts.findIndex((p) => p.id === slug);
+const olderPost =
+    currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+
+const { Content } = await render(post);
+const body = post.body ?? "";
+const readMinutes = getReadingTimeMinutes(body);
+const wordCount = getWordCount(body);
+---
+
+<BaseLayout
+    title={post.data.title}
+    description={post.data.description}
+    type="article"
+    activePath="/blog/"
+    publishedTime={post.data.date}
+    modifiedTime={post.data.date}
+    tags={post.data.tags}
+    wordCount={wordCount}
+>
+    <ReadingProgress client:only="vue" />
+
+    <article class="relative pt-10 sm:pt-16">
+        <div class="container-narrow">
+            <!-- Breadcrumb -->
+            <nav
+                aria-label="Breadcrumb"
+                class="flex items-center gap-1.5 text-xs font-medium text-zinc-500 dark:text-zinc-400"
+            >
+                <a
+                    href="/"
+                    class="transition-colors hover:text-rose-600 dark:hover:text-rose-400"
+                    >Home</a
+                >
+                <span
+                    class="i-lucide-arrow-right size-3 shrink-0 opacity-40"
+                    aria-hidden="true"></span>
+                <a
+                    href="/blog/"
+                    class="transition-colors hover:text-rose-600 dark:hover:text-rose-400"
+                    >Blog</a
+                >
+                <span
+                    class="i-lucide-arrow-right size-3 shrink-0 opacity-40"
+                    aria-hidden="true"></span>
+                <span class="truncate text-zinc-700 dark:text-zinc-300"
+                    >{post.data.title}</span
+                >
+            </nav>
+
+            <!-- Header -->
+            <header class="mt-8 space-y-6 fade-in">
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-2">
+                    {
+                        post.data.tags.map((tag) => (
+                            <a
+                                href={`/blog?tag=${encodeURIComponent(tag)}`}
+                                class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-rose-500/10 hover:text-rose-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
+                            >
+                                {tag}
+                            </a>
+                        ))
+                    }
+                </div>
+
+                <h1
+                    class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white text-balance"
+                >
+                    {post.data.title}
+                </h1>
+                <p
+                    class="text-lg leading-relaxed text-zinc-600 dark:text-zinc-400 text-pretty"
+                >
+                    {post.data.description}
+                </p>
+
+                <!-- Metadata + share -->
+                <div
+                    class="flex flex-wrap items-center justify-between gap-4 border-y border-zinc-200/60 py-4 dark:border-white/10"
+                >
+                    <div
+                        class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-zinc-500 dark:text-zinc-400"
+                    >
+                        <time
+                            datetime={post.data.date.toISOString()}
+                            class="flex items-center gap-1.5"
+                        >
+                            <span
+                                class="i-lucide-clock-3 size-3.5"
+                                aria-hidden="true"></span>
+                            {
+                                post.data.date.toLocaleDateString("en-US", {
+                                    month: "long",
+                                    day: "numeric",
+                                    year: "numeric",
+                                })
+                            }
+                        </time>
+                        <span class="flex items-center gap-1.5">
+                            <span
+                                class="i-lucide-book-text size-3.5"
+                                aria-hidden="true"></span>
+                            {readMinutes} min read
+                        </span>
+                        <span
+                            class="font-mono text-zinc-400 dark:text-zinc-600"
+                        >
+                            {wordCount.toLocaleString()} words
+                        </span>
+                    </div>
+                    <CopyPageButton
+                        client:load
+                        body={body}
+                        slug={slug}
+                        title={post.data.title}
+                        description={post.data.description}
+                        tags={post.data.tags}
+                    />
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="prose-brand mt-10">
+                <Content />
+            </div>
+
+            <!-- Author card -->
+            <div class="mt-16 glass rounded-2xl p-6 sm:p-8">
+                <div
+                    class="flex flex-col items-start gap-5 sm:flex-row sm:items-center"
+                >
+                    <Picture
+                        src={avatarImage}
+                        alt="Saku Shiina"
+                        widths={[96, 128]}
+                        sizes="96px"
+                        class="size-16 shrink-0 overflow-hidden rounded-full"
+                    />
+                    <div class="flex-1">
+                        <p
+                            class="font-display text-lg font-bold text-zinc-900 dark:text-white"
+                        >
+                            Saku Shiina
+                        </p>
+                        <p
+                            class="text-sm text-zinc-600 dark:text-zinc-400 mt-1"
+                        >
+                            Independent web engineer. Writes about architecture,
+                            performance, and interface craft.
+                        </p>
+                        <div
+                            class="mt-3 flex items-center gap-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400"
+                        >
+                            <a
+                                href="https://x.com/saku_shiina"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                class="inline-flex items-center gap-1.5 transition-colors hover:text-rose-600 dark:hover:text-rose-400"
+                            >
+                                <span
+                                    class="i-tabler-brand-x size-3.5"
+                                    aria-hidden="true"></span>
+                                @saku_shiina
+                            </a>
+                            <a
+                                href="https://github.com/shiinasaku"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                class="inline-flex items-center gap-1.5 transition-colors hover:text-rose-600 dark:hover:text-rose-400"
+                            >
+                                <span
+                                    class="i-mdi-github size-3.5"
+                                    aria-hidden="true"></span>
+                                shiinasaku
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer tags -->
+            <div class="mt-8 flex flex-wrap gap-2">
+                {
+                    post.data.tags.map((tag) => (
+                        <a
+                            href={`/blog?tag=${encodeURIComponent(tag)}`}
+                            class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-rose-500/10 hover:text-rose-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
+                        >
+                            {tag}
+                        </a>
+                    ))
+                }
+            </div>
+
+            <!-- Prev / Next nav -->
+            {
+                (olderPost || newerPost) && (
+                    <nav
+                        class="mt-10 grid gap-4 sm:grid-cols-2"
+                        aria-label="Post navigation"
+                    >
+                        {olderPost ? (
+                            <a
+                                href={`/blog/${olderPost.id}/`}
+                                class="glass card-hover group flex flex-col items-start gap-1.5 rounded-2xl p-5"
+                            >
+                                <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                                    <span
+                                        class="i-lucide-arrow-left size-3"
+                                        aria-hidden="true"
+                                    />
+                                    Previous
+                                </span>
+                                <p class="font-display text-base font-semibold leading-snug text-zinc-900 group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400 transition-colors">
+                                    {olderPost.data.title}
+                                </p>
+                            </a>
+                        ) : (
+                            <div class="hidden sm:block" />
+                        )}
+                        {newerPost ? (
+                            <a
+                                href={`/blog/${newerPost.id}/`}
+                                class="glass card-hover group flex flex-col items-start sm:items-end gap-1.5 rounded-2xl p-5"
+                            >
+                                <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                                    Next
+                                    <span
+                                        class="i-lucide-arrow-right size-3"
+                                        aria-hidden="true"
+                                    />
+                                </span>
+                                <p class="font-display text-base font-semibold leading-snug text-zinc-900 group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400 transition-colors sm:text-right">
+                                    {newerPost.data.title}
+                                </p>
+                            </a>
+                        ) : (
+                            <div class="hidden sm:block" />
+                        )}
+                    </nav>
+                )
+            }
+        </div>
+    </article>
+
+    <div class="h-20"></div>
+</BaseLayout>

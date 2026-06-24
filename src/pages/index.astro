@@ -1,0 +1,393 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import Art3D from "../components/Art3D.vue";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    .slice(0, 3);
+
+const capabilities = [
+    {
+        title: "Motion Systems",
+        description:
+            "CSS animation orchestration, interaction timing, scroll-driven micro-motions that feel alive.",
+        icon: "i-lucide-wand-2",
+        span: "md:col-span-2",
+        accent: "rose",
+    },
+    {
+        title: "Static Performance",
+        description:
+            "Astro content collections, Core Web Vitals, zero-JS by default.",
+        icon: "i-lucide-zap",
+        span: "",
+        accent: "amber",
+    },
+    {
+        title: "Product Interfaces",
+        description:
+            "TypeScript, Vue, React, component libraries, design systems.",
+        icon: "i-lucide-layers",
+        span: "",
+        accent: "violet",
+    },
+    {
+        title: "Backend Clarity",
+        description:
+            "Go, Rust, Node APIs, data contracts, structured system layers built to last.",
+        icon: "i-lucide-cpu",
+        span: "md:col-span-2",
+        accent: "mauve",
+    },
+];
+
+const marqueeItems = [
+    "Astro",
+    "Vue",
+    "React",
+    "TypeScript",
+    "Go",
+    "Rust",
+    "Node.js",
+    "Tailwind CSS",
+    "Three.js",
+    "Vite",
+    "Nuxt",
+    "Next.js",
+    "UnoCSS",
+    "Design Systems",
+    "Core Web Vitals",
+];
+
+const stackGroups = [
+    {
+        category: "Languages & Runtimes",
+        items: [
+            { icon: "i-simple-icons-go", name: "Go" },
+            { icon: "i-simple-icons-rust", name: "Rust" },
+            { icon: "i-simple-icons-nodedotjs", name: "Node.js" },
+            { icon: "i-simple-icons-bun", name: "Bun" },
+        ],
+    },
+    {
+        category: "Frameworks",
+        items: [
+            { icon: "i-simple-icons-astro", name: "Astro" },
+            { icon: "i-simple-icons-vuedotjs", name: "Vue" },
+            { icon: "i-simple-icons-react", name: "React" },
+            { icon: "i-simple-icons-nuxtdotjs", name: "Nuxt" },
+            { icon: "i-simple-icons-nextdotjs", name: "Next.js" },
+        ],
+    },
+    {
+        category: "Tooling",
+        items: [
+            { icon: "i-simple-icons-vite", name: "Vite" },
+            { icon: "i-simple-icons-tailwindcss", name: "Tailwind" },
+            { icon: "i-simple-icons-unocss", name: "UnoCSS" },
+        ],
+    },
+];
+
+const accentMap: Record<string, string> = {
+    rose: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+    amber: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    violet: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+    mauve: "bg-mauve-500/10 text-mauve-600 dark:text-mauve-400",
+};
+---
+
+<BaseLayout
+    title="Saku Shiina — Full-Stack Engineer"
+    description="Saku Shiina (椎名 朔) is a full-stack engineer building high-performance web products with Astro, TypeScript, Rust, and Go. Based on the web."
+    activePath="/"
+    keywords="Saku Shiina, 椎名 朔, さくしいな, Shiina Saku, full-stack engineer, Astro developer, Rust, TypeScript"
+>
+    <script
+        is:inline
+        type="application/ld+json"
+        set:html={`{"@context":"https://schema.org","@type":"ProfilePage","@id":"https://shiina.xyz/#profilepage","url":"https://shiina.xyz/","name":"Saku Shiina — Full-Stack Engineer","inLanguage":["en","ja"],"mainEntity":{"@id":"https://shiina.xyz/#person"}}`}
+    />
+
+    <!-- ════════════════ HERO ════════════════ -->
+    <section class="relative overflow-hidden">
+        <div class="container-page relative z-10 pt-16 pb-24 sm:pt-24 sm:pb-32">
+            <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
+                <!-- Left: text -->
+                <div class="flex flex-col items-start gap-7 fade-in">
+                    <!-- Identity badge -->
+                    <div
+                        class="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-sm font-medium shadow-soft"
+                    >
+                        <span class="relative flex">
+                            <img
+                                src="/avatar-128.png"
+                                alt="Saku Shiina avatar"
+                                width={96}
+                                height={96}
+                                class="size-6 rounded-full object-cover"
+                                loading="eager"
+                                decoding="async"
+                            />
+                            <span
+                                class="absolute bottom-0 right-0 size-2 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-zinc-900"
+                            ></span>
+                        </span>
+                        <span class="text-zinc-700 dark:text-zinc-300"
+                            >Saku Shiina</span
+                        >
+                        <span class="text-zinc-300 dark:text-zinc-600">/</span>
+                        <span
+                            class="font-serif text-mauve-700 dark:text-mauve-400"
+                            >椎名 朔</span
+                        >
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="title-hero heading-balance">
+                        Building <span class="gradient-text">interfaces</span> that feel alive.
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="body-copy max-w-xl text-lg heading-balance">
+                        Full-stack engineer crafting high-performance web
+                        products with Astro, TypeScript, Rust, and Go. Obsessed
+                        with the details users never notice — because that's the
+                        point.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="/blog/" class="btn-primary">
+                            Read the blog
+                            <span
+                                class="i-lucide-arrow-right size-4"
+                                aria-hidden="true"></span>
+                        </a>
+                        <a
+                            href="https://github.com/shiinasaku"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            class="btn-secondary"
+                        >
+                            <span class="i-mdi-github size-4" aria-hidden="true"
+                            ></span>
+                            GitHub
+                        </a>
+                    </div>
+
+                    <!-- Mini stats row -->
+                    <div
+                        class="flex flex-wrap items-center gap-x-8 gap-y-3 pt-6"
+                    >
+                        <div class="flex items-center gap-2.5">
+                            <span
+                                class="glow-dot size-2 rounded-full bg-emerald-400"
+                            ></span>
+                            <span
+                                class="text-sm font-medium text-zinc-600 dark:text-zinc-400"
+                                >Available for work</span
+                            >
+                        </div>
+                        <div
+                            class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500"
+                        >
+                            <span
+                                class="i-lucide-map-pin size-4 text-rose-400"
+                                aria-hidden="true"></span>
+                            <span>Based on the web</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: 3D crystal -->
+                <div class="relative fade-in" style="animation-delay: 150ms;">
+                    <div
+                        class="relative aspect-square w-full max-w-md mx-auto lg:max-w-lg"
+                    >
+                        <!-- Multi-layer glow behind crystal -->
+                        <div
+                            class="absolute inset-0 rounded-full bg-gradient-radial from-rose-500/20 via-violet-500/10 to-transparent blur-3xl"
+                            aria-hidden="true"
+                        >
+                        </div>
+                        <div
+                            class="absolute inset-8 rounded-full bg-gradient-radial from-amber-400/10 via-rose-500/5 to-transparent blur-2xl"
+                            aria-hidden="true"
+                        >
+                        </div>
+                        <Art3D client:only="vue" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="mt-16 flex justify-center sm:mt-20">
+                <div
+                    class="scroll-indicator flex flex-col items-center gap-1.5 text-zinc-400 dark:text-zinc-600"
+                >
+                    <span class="text-xs font-medium uppercase tracking-widest"
+                        >Scroll</span
+                    >
+                    <span class="i-lucide-arrow-down size-4" aria-hidden="true"
+                    ></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════ TECH MARQUEE ════════════════ -->
+    <section
+        class="relative py-6 overflow-hidden border-y border-zinc-200/50 dark:border-white/5 marquee-fade"
+    >
+        <div
+            class="marquee-track gap-12 py-2 text-sm font-display font-semibold text-zinc-400 dark:text-zinc-600"
+        >
+            {
+                [...marqueeItems, ...marqueeItems].map((item) => (
+                    <span class="flex items-center gap-12 whitespace-nowrap">
+                        {item}
+                        <span class="text-rose-400/40">◆</span>
+                    </span>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- ════════════════ CAPABILITIES BENTO ════════════════ -->
+    <section class="relative section-pad">
+        <div class="container-page">
+            <div class="reveal mb-12 max-w-2xl">
+                <span class="kicker">What I do</span>
+                <h2 class="title-display mt-3 heading-balance">
+                    A spectrum of engineering craft.
+                </h2>
+                <p class="body-copy mt-4">
+                    From pixel-perfect motion to backend architecture — every
+                    layer tuned for performance, clarity, and that invisible
+                    polish.
+                </p>
+            </div>
+
+            <div class="stagger grid gap-4 md:grid-cols-3">
+                {
+                    capabilities.map((cap) => (
+                        <div
+                            class={`glass-border tilt-card p-6 sm:p-7 ${cap.span}`}
+                        >
+                            <div
+                                class={`mb-4 inline-flex size-11 items-center justify-center rounded-xl ${accentMap[cap.accent]}`}
+                            >
+                                <span
+                                    class={`${cap.icon} size-5`}
+                                    aria-hidden="true"
+                                />
+                            </div>
+                            <h3 class="title-card mb-2">{cap.title}</h3>
+                            <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                                {cap.description}
+                            </p>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════ STACK ════════════════ -->
+    <section class="relative section-pad">
+        <div class="container-page">
+            <div class="reveal mb-12 max-w-2xl">
+                <span class="kicker">Toolbox</span>
+                <h2 class="title-display mt-3 heading-balance">
+                    Technologies I reach for.
+                </h2>
+            </div>
+
+            <div class="stagger grid gap-6 sm:grid-cols-3">
+                {
+                    stackGroups.map((group) => (
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="mb-5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                                {group.category}
+                            </h3>
+                            <div class="flex flex-wrap gap-3">
+                                {group.items.map((item) => (
+                                    <div class="group flex items-center gap-2 rounded-lg border border-zinc-200/60 bg-white/40 px-3 py-2 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-rose-400/50 hover:text-rose-600 hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/2 dark:text-zinc-300 dark:hover:border-rose-400/40 dark:hover:text-rose-400">
+                                        <span
+                                            class={`${item.icon} size-4 transition-transform duration-200 group-hover:scale-110`}
+                                            aria-hidden="true"
+                                        />
+                                        {item.name}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════ BLOG PREVIEW ════════════════ -->
+    <section class="relative section-pad">
+        <div class="container-page">
+            <div class="reveal mb-12 flex items-end justify-between gap-4">
+                <div class="max-w-2xl">
+                    <span class="kicker">Recent writing</span>
+                    <h2 class="title-display mt-3 heading-balance">
+                        Engineering notes.
+                    </h2>
+                    <p class="jp-accent mt-2" lang="ja">設計と実装のメモ。</p>
+                </div>
+                <a
+                    href="/blog/"
+                    class="group inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
+                >
+                    View all
+                    <span
+                        class="i-lucide-arrow-right size-4 transition-transform duration-150 group-hover:translate-x-0.5"
+                        aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div class="stagger grid gap-4 md:grid-cols-3">
+                {
+                    posts.map((post) => (
+                        <a
+                            href={`/blog/${post.id}/`}
+                            class="glass card-hover group flex flex-col rounded-2xl p-6"
+                        >
+                            <div class="mb-3 flex items-center gap-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                                <time datetime={post.data.date.toISOString()}>
+                                    {post.data.date.toLocaleDateString(
+                                        "en-US",
+                                        {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        },
+                                    )}
+                                </time>
+                            </div>
+                            <h3 class="title-card mb-2 transition-colors group-hover:text-rose-600 dark:group-hover:text-rose-400">
+                                {post.data.title}
+                            </h3>
+                            <p class="mb-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                                {post.data.description}
+                            </p>
+                            <div class="mt-auto flex flex-wrap gap-1.5">
+                                {post.data.tags.slice(0, 3).map((tag) => (
+                                    <span class="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-white/5 dark:text-zinc-400">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+</BaseLayout>

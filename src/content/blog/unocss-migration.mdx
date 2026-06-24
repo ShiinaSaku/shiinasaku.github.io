@@ -1,0 +1,92 @@
+---
+title: "Tailwind to UnoCSS: Atomic CSS at Scale"
+description: "A production-focused migration strategy from framework-style utilities to UnoCSS engine-based architecture, with performance and DX implications."
+date: 2026-02-15
+tags: ["unocss", "architecture", "performance", "dx"]
+draft: false
+---
+
+Utility-first CSS solved naming and consistency problems. But at scale, the limiting factor becomes configurability and build intelligence.
+
+That is where an engine model outperforms a framework model.
+
+## Framework mindset vs engine mindset
+
+With framework utilities, you consume an opinionated rule set and customize around it.
+With UnoCSS, you define your own vocabulary and generate only what your code actually uses.
+
+This matters when your design system evolves quickly.
+
+## What changed in our migration
+
+The migration goal was not "new syntax." It was operational leverage.
+
+### Before
+
+- Utility conventions split across config files and ad-hoc component classes.
+- Inconsistent token usage between teams.
+- Growing CSS surface area from one-off patterns.
+
+### After
+
+- `uno.config.ts` as the single design-system contract.
+- Centralized shortcuts for recurring interface primitives.
+- Runtime-free icon and typography utilities.
+- Smaller generated CSS with stricter utility discipline.
+
+## Migration strategy that worked
+
+### 1. Define tokens first
+
+Do not migrate classes before stabilizing tokens.
+
+Start with:
+
+- Color ramps
+- Type scales
+- Spacing steps
+- Radius and shadow primitives
+
+Once tokens are explicit, class migration becomes mechanical.
+
+### 2. Create semantic shortcuts
+
+Map recurring UI patterns into shortcuts:
+
+- Surface containers
+- CTA button tiers
+- Content wrappers
+
+This preserves atomic flexibility while reducing template noise.
+
+### 3. Enforce utility intent
+
+Require every class sequence to answer one question:
+
+"Is this a one-off layout need or a reusable system decision?"
+
+If reusable, move it to a shortcut.
+
+### 4. Audit generated CSS per route
+
+Measure bundle output before and after migration.
+
+Engine-based generation pays off when dead utilities disappear and route-level payloads stay constrained.
+
+## DX and performance impact
+
+What improved in practice:
+
+- Faster styling iteration loops.
+- Cleaner pull request diffs.
+- Reduced visual drift between pages.
+- Better Core Web Vitals consistency from smaller CSS payloads.
+
+Atomic CSS is not the outcome. Predictable systems are.
+
+## Final point
+
+Tailwind remains a great utility framework.
+UnoCSS becomes compelling when you need the next layer: programmable, token-first styling infrastructure with minimal payload overhead.
+
+If your team is scaling design complexity, the engine model is usually the better long-term bet.

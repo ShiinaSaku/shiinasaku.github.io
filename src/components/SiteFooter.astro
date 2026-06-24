@@ -1,0 +1,106 @@
+---
+import BackToTop from "./BackToTop.vue";
+const year = new Date().getFullYear();
+---
+
+<footer class="relative mt-auto pt-16 pb-24 sm:pb-12">
+    <!-- Gradient top border -->
+    <div
+        class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-rose-500/25 to-transparent"
+        aria-hidden="true"
+    >
+    </div>
+
+    <div class="container-page relative z-10">
+        <div
+            class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between"
+        >
+            <!-- Identity -->
+            <div class="space-y-3 max-w-xs">
+                <div>
+                    <p
+                        class="font-display text-2xl font-bold leading-tight tracking-tight text-zinc-900 dark:text-white"
+                    >
+                        Saku Shiina
+                    </p>
+                    <p class="jp-accent mt-0.5" lang="ja">椎名 朔</p>
+                </div>
+                <p class="text-sm leading-relaxed text-muted text-pretty">
+                    Independent web engineer focused on high-performance
+                    interfaces, durable systems, and clear product storytelling.
+                </p>
+            </div>
+
+            <!-- Links -->
+            <div class="flex flex-col gap-5 text-sm sm:items-end">
+                <div class="flex items-center gap-5">
+                    <a
+                        href="/blog/"
+                        class="font-semibold text-zinc-600 transition-colors hover:text-rose-600 dark:text-zinc-400 dark:hover:text-rose-400"
+                        >Blog</a
+                    >
+                    <a
+                        href="/friends/"
+                        class="font-semibold text-zinc-600 transition-colors hover:text-rose-600 dark:text-zinc-400 dark:hover:text-rose-400"
+                        >Friends</a
+                    >
+                </div>
+                <div
+                    class="flex items-center gap-4 text-zinc-500 dark:text-zinc-500"
+                >
+                    <a
+                        href="https://github.com/shiinasaku"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        class="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-zinc-900 dark:hover:text-white"
+                    >
+                        <span class="i-mdi-github size-4" aria-hidden="true"
+                        ></span>
+                        GitHub
+                    </a>
+                    <a
+                        href="https://x.com/saku_shiina"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        class="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-sky-500 dark:hover:text-sky-400"
+                    >
+                        <span class="i-tabler-brand-x size-4" aria-hidden="true"
+                        ></span>
+                        Twitter
+                    </a>
+                    <a
+                        href="mailto:sakushiina@proton.me"
+                        class="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-rose-600 dark:hover:text-rose-400"
+                    >
+                        <span
+                            class="i-tabler-mail-check size-4"
+                            aria-hidden="true"></span>
+                        Email
+                    </a>
+                    <a
+                        href="/rss.xml"
+                        class="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-orange-500 dark:hover:text-orange-400"
+                    >
+                        <span class="i-lucide-rss size-4" aria-hidden="true"
+                        ></span>
+                        RSS
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div
+            class="mt-10 flex flex-col items-start gap-3 border-t border-zinc-200/60 pt-6 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between"
+        >
+            <p class="text-sm font-medium text-zinc-500 dark:text-zinc-500">
+                © {year} Saku Shiina
+                <span class="mx-1.5 text-zinc-300 dark:text-zinc-700">·</span>
+                <span class="text-zinc-400 dark:text-zinc-600"
+                    >All rights reserved</span
+                >
+            </p>
+            <BackToTop client:load />
+        </div>
+    </div>
+</footer>

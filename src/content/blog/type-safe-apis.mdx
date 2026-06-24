@@ -1,0 +1,111 @@
+---
+title: "Type-Safe APIs: Build Contracts Before Code"
+description: "How defining your API surface with TypeScript and Zod before writing any implementation reduces bugs, accelerates iteration, and makes your whole stack legible."
+date: 2026-04-18
+tags: ["typescript", "architecture", "backend", "dx"]
+draft: false
+---
+
+Most API bugs happen at the boundary — the gap between what one part of your system sends and what another expects to receive.
+
+The usual fix is more tests. But tests describe symptoms. Contracts describe truth.
+
+## The boundary problem
+
+Every time data crosses a system boundary, you have three choices:
+
+1. Trust that the shape is correct and move fast (until you can't).
+2. Write runtime validation that's disconnected from your types.
+3. Define the shape once and have both the type system and the runtime enforce it.
+
+Option three sounds obvious. Most teams don't do it — at least not rigorously — because it requires upfront structure that feels like overhead when you're shipping fast.
+
+That overhead compounds into an asset. Skipping it compounds into debt.
+
+## Contracts first, implementation second
+
+The shift in mindset is small but fundamental: **the schema is the source of truth, not the implementation**.
+
+Start by writing the schema:
+
+```typescript
+import { z } from "zod";
+
+export const PostSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(10).max(120),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  publishedAt: z.coerce.date(),
+  tags: z.array(z.string()).default([]),
+  draft: z.boolean().default(false),
+});
+
+export type Post = z.infer<typeof PostSchema>;
+```
+
+`Post` is now a derived type — it cannot drift from the schema because it is generated from it. Any change to the schema propagates instantly to every consumer in your TypeScript codebase.
+
+## Validate at the edge, trust the interior
+
+Validation is expensive relative to pure function execution. The pattern that eliminates redundant work: **validate once at the system boundary, then trust the typed value inside**.
+
+```typescript
+// In your API handler / edge function
+export async function GET({ params }) {
+  const result = PostSchema.safeParse(await db.findPost(params.id));
+
+  if (!result.success) {
+    return new Response(JSON.stringify({ error: result.error.flatten() }), {
+      status: 422,
+    });
+  }
+
+  // result.data is fully typed — no casts, no assertions
+  return Response.json(result.data);
+}
+```
+
+The handler does not need to know how the database works. The schema enforces the contract. The type flows naturally from that point.
+
+## Colocate input and output schemas
+
+One common mistake: input validation (request bodies) lives in one place, output shapes live somewhere else as TypeScript interfaces. They drift.
+
+A better structure puts them together:
+
+```typescript
+export const CreatePostInput = z.object({
+  title: z.string().min(10).max(120),
+  body: z.string().min(100),
+  tags: z.array(z.string()).max(5).default([]),
+});
+
+export const CreatePostOutput = PostSchema.pick({
+  id: true,
+  slug: true,
+  publishedAt: true,
+});
+
+export type CreatePostInput = z.infer<typeof CreatePostInput>;
+export type CreatePostOutput = z.infer<typeof CreatePostOutput>;
+```
+
+You now have the full contract for one operation in one place. Reviewing it takes seconds. Changing it is a single edit with cascading type errors that tell you exactly what else needs updating.
+
+## What this unlocks
+
+**Automatic documentation.** Tools like `zod-to-json-schema` convert your schemas to JSON Schema or OpenAPI specs. Your spec can never be out of date because it is generated from the same source as the runtime behavior.
+
+**Safe database reads.** Most ORMs return `any` or loosely-typed records. Parsing the result through a schema before using it means a schema mismatch surfaces as a runtime error at the data layer — not as a `undefined is not an object` deep inside a React component at 2am.
+
+**Portable validation.** The same Zod schema works in a Bun server, a Next.js route handler, a Cloudflare Worker, and a browser form. You define the rule once.
+
+## The migration path
+
+You do not need to rewrite everything. The useful move is incremental: start with the endpoints you touch next.
+
+When you pick up a ticket that involves a new endpoint or a bug in an existing one, add a schema. Validate the response before returning it. Parse incoming payloads before processing them. Each schema you add is a permanent reduction in the surface area of possible bugs in that path.
+
+After a few months, the areas of the codebase with schemas will feel qualitatively different to work in. The type-checker does more of the work. Code review focuses on logic rather than shape. Refactors become confident rather than careful.
+
+That is the compounding return. It starts with one schema.

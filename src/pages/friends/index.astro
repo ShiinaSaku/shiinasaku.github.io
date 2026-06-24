@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { friends } from "../../lib/friends";
+import FriendsGallery from "../../components/FriendsGallery.vue";
+
+const serializedFriends = friends.map((f) => ({
+    name: f.name,
+    avatarUrl: f.avatarUrl,
+    location: f.location,
+    description: f.description,
+    links: f.links,
+}));
+---
+
+<BaseLayout
+    title="Friends — Saku Shiina"
+    description="A curated network of talented people across the web. Curated slowly, appreciated deeply."
+    activePath="/friends/"
+>
+    <!-- Header -->
+    <section class="relative pt-16 pb-8 sm:pt-24">
+        <div class="container-page">
+            <div class="reveal max-w-3xl flex flex-col items-start gap-4">
+                <span class="kicker">Connections</span>
+                <h1 class="title-display">
+                    People who make the web better.
+                </h1>
+                <p class="body-copy max-w-2xl">
+                    A curated network of talented creators, engineers, and artists
+                    across the independent web. Curated slowly, appreciated deeply.
+                </p>
+                <p class="jp-accent" lang="ja">好奇心を刺激してくれる人たち。</p>
+
+                <!-- Friend count stat -->
+                <div class="mt-2 inline-flex items-center gap-3 rounded-2xl glass px-5 py-3">
+                    <span class="font-display text-2xl font-bold text-rose-600 dark:text-rose-400">{friends.length}</span>
+                    <div class="flex flex-col text-left">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">people listed</span>
+                        <span class="text-[10px] font-medium text-zinc-400 dark:text-zinc-600" lang="ja">掲載人数</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="relative pb-20 sm:pb-28">
+        <div class="container-page">
+            <div class="reveal">
+                <FriendsGallery client:load friends={serializedFriends} />
+            </div>
+        </div>
+    </section>
+</BaseLayout>
