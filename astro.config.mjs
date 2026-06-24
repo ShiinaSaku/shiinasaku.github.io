@@ -9,7 +9,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://shiina.xyz",
   output: "static",
-  trailingSlash: "always",
+  trailingSlash: "ignore",
   integrations: [mdx(), sitemap(), vue()],
   vite: {
     plugins: [tailwindcss()],

@@ -54,9 +54,7 @@ const palette = {
 };
 
 function currentPalette() {
-  return document.documentElement.classList.contains("dark")
-    ? palette.dark
-    : palette.light;
+  return document.documentElement.classList.contains("dark") ? palette.dark : palette.light;
 }
 
 // ── Classic 3D simplex noise (Ashima/Stefan Gustavson) ──
@@ -217,7 +215,12 @@ function buildScene() {
   camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
   camera.position.set(0, 0, 6.0);
 
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+    powerPreference: "high-performance",
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(w, h, false);
   renderer.setClearColor(0x000000, 0);
@@ -334,7 +337,12 @@ function buildScene() {
   for (let i = 0; i < sCount; i++) {
     const radius = 1.3 + Math.random() * 1.2;
     const angle = Math.random() * Math.PI * 2;
-    sData.push({ angle, radius, speed: 0.2 + Math.random() * 0.6, yOff: (Math.random() - 0.5) * 1.5 });
+    sData.push({
+      angle,
+      radius,
+      speed: 0.2 + Math.random() * 0.6,
+      yOff: (Math.random() - 0.5) * 1.5,
+    });
     sPos[i * 3] = Math.cos(angle) * radius;
     sPos[i * 3 + 1] = sData[i].yOff;
     sPos[i * 3 + 2] = Math.sin(angle) * radius;
@@ -430,11 +438,20 @@ function animate() {
     // Spark orbit (update positions for circular motion)
     if (sparkSys) {
       const pos = sparkSys.geometry.getAttribute("position") as THREE.BufferAttribute;
-      const data = (sparkSys.geometry.userData as { data: { angle: number; radius: number; speed: number; yOff: number }[] }).data;
+      const data = (
+        sparkSys.geometry.userData as {
+          data: { angle: number; radius: number; speed: number; yOff: number }[];
+        }
+      ).data;
       for (let i = 0; i < data.length; i++) {
         const d = data[i];
         d.angle += d.speed * 0.01;
-        pos.setXYZ(i, Math.cos(d.angle) * d.radius, d.yOff + Math.sin(t * d.speed + d.angle) * 0.2, Math.sin(d.angle) * d.radius);
+        pos.setXYZ(
+          i,
+          Math.cos(d.angle) * d.radius,
+          d.yOff + Math.sin(t * d.speed + d.angle) * 0.2,
+          Math.sin(d.angle) * d.radius,
+        );
       }
       pos.needsUpdate = true;
       sparkSys.rotation.y = t * 0.05;
@@ -564,7 +581,9 @@ onUnmounted(() => {
   background: transparent;
   border: none;
 }
-.art3d-wrap.is-ready { opacity: 1; }
+.art3d-wrap.is-ready {
+  opacity: 1;
+}
 .art3d-canvas {
   position: absolute;
   inset: 0;
@@ -576,6 +595,8 @@ onUnmounted(() => {
   border: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .art3d-wrap { opacity: 1; }
+  .art3d-wrap {
+    opacity: 1;
+  }
 }
 </style>

@@ -9,10 +9,10 @@ let prefersReducedMotion = false;
 // Orb configuration — color sets per theme
 const themeConfig = {
   dark: [
-    { r: 247, g: 81, b: 146 },  // rose
-    { r: 139, g: 92, b: 246 },  // violet
+    { r: 247, g: 81, b: 146 }, // rose
+    { r: 139, g: 92, b: 246 }, // violet
     { r: 174, g: 135, b: 203 }, // mauve
-    { r: 251, g: 191, b: 36 },  // amber
+    { r: 251, g: 191, b: 36 }, // amber
   ],
   light: [
     { r: 255, g: 145, b: 175 }, // soft rose
@@ -23,13 +23,19 @@ const themeConfig = {
 };
 
 interface Orb {
-  x: number; y: number; vx: number; vy: number;
-  radius: number; colorIdx: number;
-  phase: number; phaseSpeed: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  colorIdx: number;
+  phase: number;
+  phaseSpeed: number;
 }
 
 let orbs: Orb[] = [];
-let w = 0, h = 0;
+let w = 0,
+  h = 0;
 let t = 0;
 
 function isDark() {
@@ -97,7 +103,7 @@ function draw() {
     const breathe = 1 + Math.sin(orb.phase) * 0.15;
     const r = orb.radius * breathe;
     const c = colors[orb.colorIdx];
-    const intensity = isDark() ? 0.14 : 0.10;
+    const intensity = isDark() ? 0.14 : 0.1;
 
     const grad = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, r);
     grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, ${intensity})`);
@@ -139,7 +145,7 @@ onMounted(() => {
       ctx.globalCompositeOperation = "lighter";
       for (const orb of orbs) {
         const c = colors[orb.colorIdx];
-        const intensity = isDark() ? 0.14 : 0.10;
+        const intensity = isDark() ? 0.14 : 0.1;
         const grad = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
         grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, ${intensity})`);
         grad.addColorStop(0.5, `rgba(${c.r}, ${c.g}, ${c.b}, ${intensity * 0.4})`);
@@ -210,6 +216,8 @@ onUnmounted(() => {
   background: radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(9, 9, 11, 0.7) 100%);
 }
 @media (prefers-reduced-motion: reduce) {
-  .aurora-grid { display: none; }
+  .aurora-grid {
+    display: none;
+  }
 }
 </style>

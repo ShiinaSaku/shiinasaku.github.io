@@ -102,11 +102,15 @@ function formatDate(iso: string) {
           <span>{{ post.readMinutes }} min read</span>
         </div>
 
-        <h3 class="font-display text-lg font-semibold leading-tight text-zinc-900 group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400 transition-colors text-balance">
+        <h3
+          class="font-display text-lg font-semibold leading-tight text-zinc-900 group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400 transition-colors text-balance"
+        >
           {{ post.title }}
         </h3>
 
-        <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 text-pretty line-clamp-2">
+        <p
+          class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 text-pretty line-clamp-2"
+        >
           {{ post.description }}
         </p>
 
@@ -124,7 +128,9 @@ function formatDate(iso: string) {
 
     <!-- Empty state -->
     <div v-else class="glass rounded-2xl py-16 text-center">
-      <div class="inline-flex items-center justify-center size-12 rounded-full bg-zinc-100 text-zinc-400 mb-3 dark:bg-white/5">
+      <div
+        class="inline-flex items-center justify-center size-12 rounded-full bg-zinc-100 text-zinc-400 mb-3 dark:bg-white/5"
+      >
         <span class="i-lucide-search-x size-6" aria-hidden="true"></span>
       </div>
       <p class="kicker">No match</p>

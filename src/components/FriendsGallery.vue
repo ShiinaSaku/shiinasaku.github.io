@@ -69,7 +69,9 @@ function getInitials(name: string): string {
 
     <!-- Empty state -->
     <div v-if="visible.length === 0" class="glass rounded-2xl py-16 text-center">
-      <div class="inline-flex items-center justify-center size-12 rounded-full bg-zinc-100 text-zinc-400 mb-3 dark:bg-white/5">
+      <div
+        class="inline-flex items-center justify-center size-12 rounded-full bg-zinc-100 text-zinc-400 mb-3 dark:bg-white/5"
+      >
         <span class="i-lucide-search-x size-6" aria-hidden="true"></span>
       </div>
       <p class="kicker">No match</p>
@@ -95,7 +97,9 @@ function getInitials(name: string): string {
         <div>
           <!-- Header -->
           <div class="flex items-center gap-3.5">
-            <div class="relative size-12 rounded-full border border-zinc-200/80 overflow-hidden shrink-0 dark:border-white/10">
+            <div
+              class="relative size-12 rounded-full border border-zinc-200/80 overflow-hidden shrink-0 dark:border-white/10"
+            >
               <img
                 v-if="friend.avatarUrl"
                 :src="friend.avatarUrl"
@@ -112,11 +116,15 @@ function getInitials(name: string): string {
             </div>
 
             <div class="min-w-0">
-              <p class="flex items-center gap-1 text-xs font-medium text-rose-600 dark:text-rose-400">
+              <p
+                class="flex items-center gap-1 text-xs font-medium text-rose-600 dark:text-rose-400"
+              >
                 <span class="i-lucide-map-pin size-3" aria-hidden="true"></span>
                 {{ friend.location }}
               </p>
-              <h3 class="font-display text-base font-semibold leading-tight text-zinc-900 dark:text-white mt-0.5 truncate">
+              <h3
+                class="font-display text-base font-semibold leading-tight text-zinc-900 dark:text-white mt-0.5 truncate"
+              >
                 {{ friend.name }}
               </h3>
             </div>
