@@ -19,6 +19,19 @@ const linkLabelMap: Record<FriendLink["type"], string> = {
   twitter: "Updates",
 };
 
+const linkColorMap: Record<FriendLink["type"], string> = {
+  website: "hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400",
+  blog: "hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400",
+  github: "hover:bg-zinc-500/15 hover:text-zinc-900 dark:hover:text-white",
+  twitter: "hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400",
+};
+
+const avatarRings = [
+  "from-rose-400 via-mauve-500 to-amber-400",
+  "from-mauve-400 via-rose-500 to-violet-400",
+  "from-amber-400 via-rose-400 to-mauve-500",
+];
+
 const visible = computed(() => {
   const q = query.value.trim().toLowerCase();
   if (!q) return props.friends;
@@ -88,55 +101,58 @@ function getInitials(name: string): string {
     </div>
 
     <!-- Cards Grid -->
-    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <article
-        v-for="friend in visible"
+        v-for="(friend, i) in visible"
         :key="friend.name"
-        class="glass card-hover rounded-2xl p-6 flex flex-col justify-between group"
+        class="glass spotlight-card card-hover group flex flex-col rounded-2xl p-4"
       >
-        <div>
-          <!-- Header -->
-          <div class="flex items-center gap-3.5">
+        <!-- Header -->
+        <div class="flex items-center gap-3">
+          <div
+            class="h-11 w-11 shrink-0 rounded-full bg-linear-to-br p-0.5 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
+            :class="avatarRings[i % avatarRings.length]"
+          >
+            <img
+              v-if="friend.avatarUrl"
+              :src="friend.avatarUrl"
+              :alt="friend.name"
+              class="h-full w-full rounded-full bg-white object-cover dark:bg-zinc-900"
+              loading="lazy"
+            />
             <div
-              class="relative size-12 rounded-full border border-zinc-200/80 overflow-hidden shrink-0 dark:border-white/10"
+              v-else
+              class="flex h-full w-full items-center justify-center rounded-full bg-zinc-100 text-xs font-bold text-zinc-500 dark:bg-white/5 dark:text-zinc-400"
             >
-              <img
-                v-if="friend.avatarUrl"
-                :src="friend.avatarUrl"
-                :alt="friend.name"
-                class="size-full object-cover"
-                loading="lazy"
-              />
-              <div
-                v-else
-                class="size-full flex items-center justify-center bg-zinc-100 dark:bg-white/5 text-xs font-bold text-zinc-500 dark:text-zinc-400"
-              >
-                {{ getInitials(friend.name) }}
-              </div>
-            </div>
-
-            <div class="min-w-0">
-              <p
-                class="flex items-center gap-1 text-xs font-medium text-rose-600 dark:text-rose-400"
-              >
-                <span class="i-lucide-map-pin size-3" aria-hidden="true"></span>
-                {{ friend.location }}
-              </p>
-              <h3
-                class="font-display text-base font-semibold leading-tight text-zinc-900 dark:text-white mt-0.5 truncate"
-              >
-                {{ friend.name }}
-              </h3>
+              {{ getInitials(friend.name) }}
             </div>
           </div>
 
-          <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 text-pretty mt-4">
-            {{ friend.description }}
-          </p>
+          <div class="min-w-0">
+            <h3
+              class="truncate font-display text-sm font-semibold leading-tight text-zinc-900 dark:text-white"
+            >
+              {{ friend.name }}
+            </h3>
+            <p
+              class="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-rose-600 dark:text-rose-400"
+            >
+              <span class="i-lucide-map-pin size-3" aria-hidden="true"></span>
+              {{ friend.location }}
+            </p>
+          </div>
         </div>
 
+        <p
+          class="mt-3 flex-1 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 text-pretty line-clamp-3"
+        >
+          {{ friend.description }}
+        </p>
+
         <!-- Links -->
-        <div class="flex flex-wrap gap-2 pt-4 mt-5 border-t border-zinc-200/50 dark:border-white/5">
+        <div
+          class="mt-3 flex flex-wrap gap-1.5 border-t border-zinc-200/50 pt-3 dark:border-white/5"
+        >
           <a
             v-for="link in friend.links"
             :key="link.url"
@@ -144,10 +160,11 @@ function getInitials(name: string): string {
             target="_blank"
             rel="noreferrer noopener"
             :aria-label="`${friend.name} — ${linkLabelMap[link.type]}`"
-            class="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-rose-500/10 hover:text-rose-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-colors duration-200 cursor-pointer"
+            :title="linkLabelMap[link.type]"
+            class="inline-flex size-7 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 transition-all duration-200 hover:-translate-y-0.5 dark:bg-white/5 dark:text-zinc-400"
+            :class="linkColorMap[link.type]"
           >
-            <span :class="linkIconMap[link.type]" class="size-3" aria-hidden="true"></span>
-            {{ linkLabelMap[link.type] }}
+            <span :class="linkIconMap[link.type]" class="size-3.5" aria-hidden="true"></span>
           </a>
         </div>
       </article>

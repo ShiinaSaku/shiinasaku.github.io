@@ -36,6 +36,9 @@ const filtered = computed(() =>
   activeTag.value ? props.posts.filter((p) => p.tags.includes(activeTag.value!)) : props.posts,
 );
 
+const featured = computed(() => (activeTag.value === null ? (filtered.value[0] ?? null) : null));
+const rest = computed(() => (featured.value ? filtered.value.slice(1) : filtered.value));
+
 function toggle(tag: string) {
   activeTag.value = activeTag.value === tag ? null : tag;
   const url = new URL(window.location.href);
@@ -88,10 +91,58 @@ function formatDate(iso: string) {
       </button>
     </div>
 
+    <!-- Featured latest post -->
+    <a
+      v-if="featured"
+      :href="`/blog/${featured.id}/`"
+      class="glass-border spotlight-card card-hover group relative flex flex-col gap-4 rounded-2xl p-6 sm:p-8 cursor-pointer overflow-hidden"
+    >
+      <div class="flex items-center gap-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        <span class="kicker">Latest</span>
+        <span class="text-zinc-300 dark:text-zinc-700">·</span>
+        <time>{{ formatDate(featured.date) }}</time>
+        <span class="text-zinc-300 dark:text-zinc-700">·</span>
+        <span>{{ featured.readMinutes }} min read</span>
+      </div>
+
+      <h2
+        class="font-display text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-zinc-900 group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400 transition-colors text-balance"
+      >
+        {{ featured.title }}
+      </h2>
+
+      <p
+        class="text-sm sm:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 text-pretty line-clamp-2 max-w-2xl"
+      >
+        {{ featured.description }}
+      </p>
+
+      <div class="flex items-center justify-between gap-4 pt-1">
+        <div class="flex flex-wrap gap-1.5">
+          <span
+            v-for="tag in featured.tags.slice(0, 3)"
+            :key="tag"
+            class="rounded-full bg-zinc-100 px-2.5 py-0.5 text-[11px] font-medium text-zinc-500 dark:bg-white/5 dark:text-zinc-400"
+          >
+            {{ tag }}
+          </span>
+        </div>
+        <span
+          class="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-rose-600 dark:text-rose-400"
+        >
+          Read
+          <span
+            class="i-lucide-arrow-right size-4 transition-transform duration-150 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          ></span>
+        </span>
+      </div>
+    </a>
+
     <!-- Post list -->
-    <div v-if="filtered.length > 0" class="flex flex-col gap-3">
+    <div v-if="rest.length > 0" class="flex flex-col gap-3">
       <a
-        v-for="post in filtered"
+        v-for="post in rest"
         :key="post.id"
         :href="`/blog/${post.id}/`"
         class="glass card-hover group rounded-2xl p-5 sm:p-6 flex flex-col gap-3 cursor-pointer"
@@ -127,7 +178,7 @@ function formatDate(iso: string) {
     </div>
 
     <!-- Empty state -->
-    <div v-else class="glass rounded-2xl py-16 text-center">
+    <div v-if="filtered.length === 0" class="glass rounded-2xl py-16 text-center">
       <div
         class="inline-flex items-center justify-center size-12 rounded-full bg-zinc-100 text-zinc-400 mb-3 dark:bg-white/5"
       >

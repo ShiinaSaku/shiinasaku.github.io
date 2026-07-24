@@ -1,0 +1,73 @@
+---
+title: "Anatomy of a Zero-JS-First Personal Site"
+description: "How this site is built: Astro static output with surgical Vue islands, WebGL only where it earns its bytes, and a build that fails before anything broken ships."
+date: 2026-07-24
+tags: ["astro", "vue", "performance", "architecture", "frontend"]
+draft: false
+---
+
+Every kilobyte on this page had to argue for its existence.
+
+The stack looks ordinary on paper — Astro, Vue, Tailwind. The interesting part is not what I chose, but the rules I gave each piece. This post is the full anatomy: what renders where, what ships to the browser, and why.
+
+## The rule: HTML first, JavaScript on parole
+
+Astro's islands model gets talked about as a convenience. It is actually a budget system. Every page on this site renders to static HTML at build time — no runtime server, no hydration of the page shell, no JavaScript required to read anything.
+
+JavaScript only appears in small, named islands, each with an explicit loading contract:
+
+- `client:only` for things that cannot exist without the DOM — the WebGL aurora background, the wave field in the hero
+- `client:load` for things that must work immediately — the command palette, the theme toggle
+- `client:visible` for things that can wait — the logo marquee, the count-up stats
+
+The practical effect: a reader on a slow connection gets the full page, styled, before a single component hydrates. The islands arrive as an enhancement layer, never as a blocker.
+
+## The motion system is mostly CSS
+
+It is tempting to reach for a JavaScript animation library for everything. Most of the motion here is declarative: scroll reveals run on a single `IntersectionObserver` in the base layout, stagger delays are plain `nth-child` transition offsets, and the hover physics are a few custom easing curves shared as CSS variables.
+
+```css
+:root {
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms var(--ease-expo),
+    transform 700ms var(--ease-expo);
+}
+```
+
+The observer survives Astro's view transitions because it re-binds on `astro:after-swap` — one listener, every page, no framework overhead.
+
+JavaScript motion is reserved for cases where CSS genuinely cannot go: the GSAP pill expansion in the nav, and the per-character spring rotation in the hero headline. Two libraries earn their bytes; everything else is free.
+
+## WebGL twice, not ten times
+
+There are exactly two GPU contexts on the homepage: the aurora background (a single fullscreen triangle with a simplex-noise fragment shader, via `ogl`) and the wave field (a 2D canvas with perlin-driven point displacement). Both are isolated behind the same discipline:
+
+- Theme-aware: a `MutationObserver` on `<html>` swaps palettes when the theme flips
+- Motion-aware: `prefers-reduced-motion` renders one static frame and stops the loop
+- Context-aware: everything disposes on unmount, because view transitions remount islands constantly
+
+The aurora shader is sixty lines of GLSL. It replaced an earlier version that simulated orbiting radial gradients on 2D canvas — the shader version is faster, smoother, and smaller than the "simple" approach.
+
+## The build is the only test suite
+
+There are no unit tests here. Instead, the build is adversarial:
+
+- Blog frontmatter is validated by a strict Zod schema in the content collection — a title under 10 characters or a description outside 40–170 characters fails the build
+- Every page renders at build time, so any broken component is a build error, not a runtime surprise
+- OG images are generated per-page at build time — if a page exists, its social card exists
+
+One hard-won lesson lives in the dependency list: TypeScript 7 breaks `@vue/compiler-sfc`'s imported-type resolution, and the failure mode is a confusing "No fs option provided" error deep in the bundler. TypeScript stays pinned to 6.x, and the pin is documented where the next person will look.
+
+## What this costs
+
+The discipline is not free. Every interactive idea starts with "can CSS do this?" and most die there. Islands must be designed to remount cleanly. Components copied from elsewhere get audited for SSR mismatches before they ship — one `div` rendered where a `span` belonged once silently killed hydration for an entire headline.
+
+But the payoff compounds: the whole site ships less JavaScript than a single medium-sized React component, scores are boring (in the good way), and adding a new page means writing markdown and getting SEO, RSS, sitemap, and social cards for free.
+
+Build the boring parts boring. Spend the budget where users can feel it.

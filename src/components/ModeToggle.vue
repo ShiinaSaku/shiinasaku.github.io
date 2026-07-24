@@ -35,7 +35,8 @@ function toggleMode() {
 <template>
   <button
     type="button"
-    class="size-9 rounded-full border border-zinc-200/80 bg-white/50 text-zinc-700 transition-colors duration-200 hover:border-rose-400/50 hover:bg-rose-500/5 hover:text-rose-600 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300 dark:hover:border-rose-400/40 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 cursor-pointer flex items-center justify-center relative overflow-hidden backdrop-blur-md"
+    class="size-9 md:size-10 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-105 cursor-pointer flex items-center justify-center relative overflow-hidden"
+    style="background: var(--card); color: var(--foreground)"
     @click="toggleMode"
     aria-label="Toggle theme"
   >

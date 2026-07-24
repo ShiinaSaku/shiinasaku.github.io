@@ -1,11 +1,24 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import { getCollection } from "astro:content";
 import "../styles/global.css";
 import "../styles/tailwind.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import AuroraBackground from "../components/AuroraBackground.vue";
+import CommandPalette from "../components/CommandPalette.vue";
 import SeoHead from "../components/SeoHead.astro";
+
+const palettePosts = (
+    await getCollection("blog", ({ data }) => !data.draft)
+)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    .map((p) => ({
+        id: p.id,
+        title: p.data.title,
+        description: p.data.description,
+        tags: p.data.tags,
+    }));
 
 interface Props {
   title: string;
@@ -21,11 +34,11 @@ interface Props {
 }
 
 const {
-  title,
-  description,
-  type = "website",
-  activePath = "/",
-  publishedTime,
+    title,
+    description,
+    type = "website",
+    activePath = "/",
+    publishedTime,
   modifiedTime,
   tags = [],
   noindex = false,
@@ -75,6 +88,7 @@ const {
     class="min-h-screen bg-zinc-50 text-zinc-900 transition-colors duration-200 dark:bg-zinc-950 dark:text-zinc-50"
   >
     <AuroraBackground client:only="vue" />
+    <CommandPalette client:only="vue" posts={palettePosts} />
     <SiteHeader activePath={activePath} />
     <main>
       <slot />
@@ -104,6 +118,17 @@ const {
       };
       setupReveal();
       document.addEventListener("astro:after-swap", setupReveal);
+    </script>
+
+    <!-- Spotlight cards: track pointer position per card (event-delegated, survives view transitions) -->
+    <script>
+      document.addEventListener("pointermove", (e) => {
+        const card = (e.target as Element | null)?.closest?.(".spotlight-card");
+        if (!(card instanceof HTMLElement)) return;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+      });
     </script>
   </body>
 </html>

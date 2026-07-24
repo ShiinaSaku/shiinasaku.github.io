@@ -34,6 +34,28 @@
   mask-size: 100% 100%;
 }
 
+/* ── Map shadcn CSS vars to Tailwind color utilities (bg-popover, text-muted-foreground, etc.) ── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
 /* ════════════════════════════════════════════════════════════
    LUMINOUS EDITORIAL — Design System
    A dark-first palette with warm rose/pink/amber accents,
@@ -405,11 +427,6 @@ html {
 }
 
 /* ═══ Mobile safe area ════════════════════════════════════ */
-@media (max-width: 639px) {
-  body {
-    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
-  }
-}
 
 /* ═══ Premium gradient button ════════════════════════════ */
 .btn-primary {
@@ -663,6 +680,44 @@ html {
 .marquee-fade {
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* ── Spotlight card: mouse-follow radial glow (position via --mouse-x/--mouse-y set in JS) ── */
+.spotlight-card {
+  position: relative;
+}
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  background: radial-gradient(
+    480px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(247, 81, 146, 0.1),
+    transparent 45%
+  );
+  pointer-events: none;
+}
+@variant dark {
+  .spotlight-card::after {
+    background: radial-gradient(
+      480px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(247, 81, 146, 0.14),
+      transparent 45%
+    );
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .spotlight-card:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ── Bento cell base ── */
+@utility bento-cell {
+  @apply relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/60 backdrop-blur-xl dark:border-white/10 dark:bg-white/3;
 }
 
 /* ── Grid pattern card background ── */

@@ -1,5 +1,6 @@
 ---
 import ModeToggle from "./ModeToggle.vue";
+import PillNav from "./PillNav.vue";
 
 interface Props {
     activePath?: string;
@@ -7,114 +8,37 @@ interface Props {
 
 const { activePath = "/" } = Astro.props;
 
-const nav = [
-    { href: "/", label: "Home", icon: "i-lucide-house" },
-    { href: "/blog/", label: "Blog", icon: "i-lucide-book-open" },
-    { href: "/friends/", label: "Friends", icon: "i-lucide-contact" },
+const menuItems = [
+    { label: "Home", href: "/", ariaLabel: "Home" },
+    { label: "Blog", href: "/blog/", ariaLabel: "Blog" },
+    { label: "Friends", href: "/friends/", ariaLabel: "Friends" },
 ];
 ---
 
-<header class="sticky top-0 z-50 w-full">
-    <div
-        class="glass-strong border-x-0 border-t-0 transition-colors duration-200"
-    >
-        <div class="container-page">
-            <div class="flex h-16 items-center justify-between gap-4">
-                <!-- Logo -->
-                <a
-                    href="/"
-                    class="group flex items-center gap-2.5 text-sm font-semibold tracking-tight text-zinc-900 dark:text-white"
-                >
-                    <div class="relative">
-                        <img
-                            src="/avatar-128.png"
-                            alt="Saku Shiina avatar"
-                            width={108}
-                            height={108}
-                            class="size-9 rounded-full border border-zinc-200 object-cover transition-transform duration-200 group-hover:scale-105 dark:border-white/15"
-                            loading="eager"
-                            decoding="async"
-                        />
-                        <span
-                            class="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-zinc-950"
-                            aria-hidden="true"></span>
-                    </div>
-                    <div class="flex items-baseline gap-2">
-                        <span
-                            class="font-display text-base leading-none font-bold tracking-tight sm:text-lg"
-                            >Saku Shiina</span
-                        >
-                        <span
-                            class="hidden text-xs font-medium text-mauve-700 dark:text-mauve-400 sm:inline"
-                            lang="ja">椎名 朔</span
-                        >
-                    </div>
-                </a>
-
-                <!-- Desktop nav -->
-                <nav
-                    aria-label="Primary"
-                    class="hidden items-center gap-1 sm:flex"
-                >
-                    {
-                        nav.map((item) => (
-                            <a
-                                href={item.href}
-                                aria-current={
-                                    activePath === item.href
-                                        ? "page"
-                                        : undefined
-                                }
-                                class:list={[
-                                    "relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200",
-                                    activePath === item.href
-                                        ? "text-rose-600 dark:text-rose-400"
-                                        : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white",
-                                ]}
-                            >
-                                {item.label}
-                                {activePath === item.href && (
-                                    <span
-                                        class="absolute inset-0 -z-10 rounded-full bg-rose-500/10 dark:bg-rose-500/15"
-                                        aria-hidden="true"
-                                    />
-                                )}
-                            </a>
-                        ))
-                    }
-                </nav>
-
-                <!-- Theme toggle -->
-                <div class="flex items-center gap-2">
-                    <ModeToggle client:only="vue" />
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- Mobile Bottom Navigation -->
-<nav
-    aria-label="Mobile navigation"
-    class="fixed inset-x-0 bottom-0 z-50 sm:hidden glass-strong border-x-0 border-b-0 pb-[env(safe-area-inset-bottom,0px)]"
+<PillNav
+    client:load
+    logo="/avatar-128.png"
+    logoAlt="Saku Shiina avatar"
+    logoHref="/"
+    items={menuItems}
+    activeHref={activePath}
+    baseColor="var(--foreground)"
+    pillColor="var(--card)"
+    pillTextColor="var(--foreground)"
+    hoveredPillTextColor="var(--card)"
+    ease="power3.easeOut"
+    initialLoadAnimation
 >
-    <div class="flex items-center justify-around px-2 py-2">
-        {
-            nav.map((item) => (
-                <a
-                    href={item.href}
-                    aria-current={activePath === item.href ? "page" : undefined}
-                    class:list={[
-                        "flex flex-col items-center gap-1 rounded-xl px-4 py-1.5 text-[10px] font-medium transition-colors duration-200",
-                        activePath === item.href
-                            ? "text-rose-600 dark:text-rose-400"
-                            : "text-zinc-500 dark:text-zinc-400",
-                    ]}
-                >
-                    <span class={item.icon + " size-5"} aria-hidden="true" />
-                    {item.label}
-                </a>
-            ))
-        }
-    </div>
-</nav>
+    <Fragment slot="actions">
+        <button
+            type="button"
+            aria-label="Open command palette"
+            onclick="window.dispatchEvent(new Event('open-command-palette'))"
+            class="inline-flex size-9 items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-105 cursor-pointer"
+            style="background: var(--card); color: var(--foreground);"
+        >
+            <span class="i-lucide-search size-4" aria-hidden="true"></span>
+        </button>
+        <ModeToggle client:only="vue" />
+    </Fragment>
+</PillNav>

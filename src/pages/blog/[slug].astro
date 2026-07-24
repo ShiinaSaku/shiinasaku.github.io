@@ -37,7 +37,8 @@ const olderPost =
     currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const body = post.body ?? "";
 const readMinutes = getReadingTimeMinutes(body);
 const wordCount = getWordCount(body);
@@ -55,7 +56,34 @@ const wordCount = getWordCount(body);
 >
     <ReadingProgress client:only="vue" />
 
-    <article class="relative pt-10 sm:pt-16">
+    {
+        tocHeadings.length > 1 && (
+            <aside
+                class="fixed top-36 right-6 z-40 hidden w-52 xl:block"
+                aria-label="Table of contents"
+            >
+                <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-600">
+                    On this page
+                </p>
+                <nav class="flex flex-col gap-1 border-l border-zinc-200/70 dark:border-white/10">
+                    {tocHeadings.map((h) => (
+                        <a
+                            href={`#${h.slug}`}
+                            data-toc-link={h.slug}
+                            class:list={[
+                                "-ml-px border-l-2 border-transparent py-1 pr-2 text-xs leading-snug text-zinc-500 transition-colors duration-150 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-100",
+                                h.depth === 3 ? "pl-7" : "pl-4",
+                            ]}
+                        >
+                            {h.text}
+                        </a>
+                    ))}
+                </nav>
+            </aside>
+        )
+    }
+
+    <article class="relative pt-24 sm:pt-32">
         <div class="container-narrow">
             <!-- Breadcrumb -->
             <nav
@@ -280,4 +308,31 @@ const wordCount = getWordCount(body);
     </article>
 
     <div class="h-20"></div>
+
+    <!-- TOC scroll-spy -->
+    <script>
+        const tocLinks = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
+        if (tocLinks.length > 0) {
+            const ACTIVE = ["text-rose-600", "dark:text-rose-400", "border-rose-500", "dark:border-rose-400"];
+            const setActive = (slug: string) => {
+                tocLinks.forEach((link) => {
+                    const isActive = link.dataset.tocLink === slug;
+                    link.classList.toggle("border-transparent", !isActive);
+                    ACTIVE.forEach((c) => link.classList.toggle(c, isActive));
+                });
+            };
+            const headingEls = [...tocLinks]
+                .map((l) => document.getElementById(l.dataset.tocLink!))
+                .filter((el): el is HTMLElement => el !== null);
+            const spy = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) setActive(entry.target.id);
+                    });
+                },
+                { rootMargin: "-20% 0px -70% 0px" },
+            );
+            headingEls.forEach((el) => spy.observe(el));
+        }
+    </script>
 </BaseLayout>

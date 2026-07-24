@@ -1,11 +1,15 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import Art3D from "../components/Art3D.vue";
+import RotatingText from "../components/RotatingText.vue";
+import Waves from "../components/Waves.vue";
+import LogoLoop from "../components/LogoLoop.vue";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-    .slice(0, 3);
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const latestPost = posts[0];
+const recentPosts = posts.slice(0, 3);
 
 const capabilities = [
     {
@@ -42,22 +46,21 @@ const capabilities = [
     },
 ];
 
-const marqueeItems = [
-    "Astro",
-    "Vue",
-    "React",
-    "TypeScript",
-    "Go",
-    "Rust",
-    "Node.js",
-    "Tailwind CSS",
-    "Three.js",
-    "Vite",
-    "Nuxt",
-    "Next.js",
-    "UnoCSS",
-    "Design Systems",
-    "Core Web Vitals",
+const techLogos = [
+    { node: '<span class="i-simple-icons-astro"></span>', title: "Astro" },
+    { node: '<span class="i-simple-icons-vuedotjs"></span>', title: "Vue" },
+    { node: '<span class="i-simple-icons-react"></span>', title: "React" },
+    { node: '<span class="i-simple-icons-nuxtdotjs"></span>', title: "Nuxt" },
+    { node: '<span class="i-simple-icons-nextdotjs"></span>', title: "Next.js" },
+    { node: '<span class="i-simple-icons-typescript"></span>', title: "TypeScript" },
+    { node: '<span class="i-simple-icons-go"></span>', title: "Go" },
+    { node: '<span class="i-simple-icons-rust"></span>', title: "Rust" },
+    { node: '<span class="i-simple-icons-nodedotjs"></span>', title: "Node.js" },
+    { node: '<span class="i-simple-icons-bun"></span>', title: "Bun" },
+    { node: '<span class="i-simple-icons-vite"></span>', title: "Vite" },
+    { node: '<span class="i-simple-icons-tailwindcss"></span>', title: "Tailwind CSS" },
+    { node: '<span class="i-simple-icons-unocss"></span>', title: "UnoCSS" },
+    { node: '<span class="i-simple-icons-threedotjs"></span>', title: "Three.js" },
 ];
 
 const stackGroups = [
@@ -99,10 +102,10 @@ const accentMap: Record<string, string> = {
 ---
 
 <BaseLayout
-    title="Saku Shiina — Full-Stack Engineer"
-    description="Saku Shiina (椎名 朔) is a full-stack engineer building high-performance web products with Astro, TypeScript, Rust, and Go. Based on the web."
+    title="Saku Shiina (椎名 朔) — Full-Stack Engineer"
+    description="Saku Shiina (椎名 朔 / さくしいな) is a full-stack engineer building high-performance web products with Astro, TypeScript, Rust, and Go. フルスタックエンジニア椎名朔のポートフォリオ・技術ブログ。"
     activePath="/"
-    keywords="Saku Shiina, 椎名 朔, さくしいな, Shiina Saku, full-stack engineer, Astro developer, Rust, TypeScript"
+    keywords="Saku Shiina, 椎名 朔, 椎名朔, さくしいな, シイナサク, Shiina Saku, full-stack engineer, フルスタックエンジニア, Astro developer, Rust, TypeScript"
 >
     <script
         is:inline
@@ -110,149 +113,257 @@ const accentMap: Record<string, string> = {
         set:html={`{"@context":"https://schema.org","@type":"ProfilePage","@id":"https://shiina.xyz/#profilepage","url":"https://shiina.xyz/","name":"Saku Shiina — Full-Stack Engineer","inLanguage":["en","ja"],"mainEntity":{"@id":"https://shiina.xyz/#person"}}`}
     />
 
-    <!-- ════════════════ HERO ════════════════ -->
+    <!-- ════════════════ HERO BENTO ════════════════ -->
     <section class="relative overflow-hidden">
-        <div class="container-page relative z-10 pt-16 pb-24 sm:pt-24 sm:pb-32">
-            <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
-                <!-- Left: text -->
-                <div class="flex flex-col items-start gap-7 fade-in">
-                    <!-- Identity badge -->
-                    <div
-                        class="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-sm font-medium shadow-soft"
-                    >
-                        <span class="relative flex">
-                            <img
-                                src="/avatar-128.png"
-                                alt="Saku Shiina avatar"
-                                width={96}
-                                height={96}
-                                class="size-6 rounded-full object-cover"
-                                loading="eager"
-                                decoding="async"
-                            />
-                            <span
-                                class="absolute bottom-0 right-0 size-2 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-zinc-900"
-                            ></span>
-                        </span>
-                        <span class="text-zinc-700 dark:text-zinc-300"
-                            >Saku Shiina</span
+        <div class="container-page relative z-10 pt-24 pb-16 sm:pt-32 sm:pb-24">
+            <div class="grid gap-4 md:grid-cols-3">
+                <!-- Identity cell -->
+                <div
+                    class="bento-cell spotlight-card fade-in flex flex-col items-start justify-between gap-8 p-7 sm:p-9 md:col-span-2"
+                >
+                    <div class="flex flex-col items-start gap-6">
+                        <!-- Identity badge -->
+                        <div
+                            class="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-sm font-medium shadow-soft"
                         >
-                        <span class="text-zinc-300 dark:text-zinc-600">/</span>
-                        <span
-                            class="font-serif text-mauve-700 dark:text-mauve-400"
-                            >椎名 朔</span
-                        >
-                    </div>
-
-                    <!-- Title -->
-                    <h1 class="title-hero heading-balance">
-                        Building <span class="gradient-text">interfaces</span> that feel alive.
-                    </h1>
-
-                    <!-- Subtitle -->
-                    <p class="body-copy max-w-xl text-lg heading-balance">
-                        Full-stack engineer crafting high-performance web
-                        products with Astro, TypeScript, Rust, and Go. Obsessed
-                        with the details users never notice — because that's the
-                        point.
-                    </p>
-
-                    <!-- CTAs -->
-                    <div class="flex flex-wrap items-center gap-4 pt-2">
-                        <a href="/blog/" class="btn-primary">
-                            Read the blog
+                            <span class="relative flex">
+                                <img
+                                    src="/avatar-128.png"
+                                    alt="Saku Shiina avatar"
+                                    width={96}
+                                    height={96}
+                                    class="size-6 rounded-full object-cover"
+                                    loading="eager"
+                                    decoding="async"
+                                />
+                                <span
+                                    class="absolute bottom-0 right-0 size-2 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-zinc-900"
+                                ></span>
+                            </span>
+                            <span class="text-zinc-700 dark:text-zinc-300"
+                                >Saku Shiina</span
+                            >
+                            <span class="text-zinc-300 dark:text-zinc-600">/</span>
                             <span
-                                class="i-lucide-arrow-right size-4"
-                                aria-hidden="true"></span>
-                        </a>
-                        <a
-                            href="https://github.com/shiinasaku"
-                            target="_blank"
-                            rel="noreferrer noopener"
-                            class="btn-secondary"
-                        >
-                            <span class="i-mdi-github size-4" aria-hidden="true"
-                            ></span>
-                            GitHub
-                        </a>
-                    </div>
-
-                    <!-- Mini stats row -->
-                    <div
-                        class="flex flex-wrap items-center gap-x-8 gap-y-3 pt-6"
-                    >
-                        <div class="flex items-center gap-2.5">
-                            <span
-                                class="glow-dot size-2 rounded-full bg-emerald-400"
-                            ></span>
-                            <span
-                                class="text-sm font-medium text-zinc-600 dark:text-zinc-400"
-                                >Available for work</span
+                                class="font-serif text-mauve-700 dark:text-mauve-400"
+                                >椎名 朔</span
                             >
                         </div>
-                        <div
-                            class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500"
-                        >
-                            <span
-                                class="i-lucide-map-pin size-4 text-rose-400"
-                                aria-hidden="true"></span>
-                            <span>Based on the web</span>
+
+                        <!-- Title with rotating skills -->
+                        <h1 class="title-hero heading-balance">
+                            Building
+                            <RotatingText
+                                client:only="vue"
+                                texts={["interfaces", "motion systems", "experiences", "design systems"]}
+                                mainClassName="inline-flex text-rose-600 dark:text-rose-400 overflow-hidden"
+                                splitLevelClassName="overflow-hidden pb-1"
+                                staggerFrom="last"
+                                initial={{ y: "100%", opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: "-120%", opacity: 0 }}
+                                staggerDuration={0.02}
+                                rotationInterval={2200}
+                                transition={{ type: "spring", damping: 28, stiffness: 380 }}
+                            />
+                            <br />
+                            that feel alive.
+                        </h1>
+
+                        <!-- Subtitle -->
+                        <p class="body-copy max-w-xl text-lg heading-balance">
+                            Full-stack engineer crafting high-performance web
+                            products with Astro, TypeScript, Rust, and Go.
+                            Obsessed with the details users never notice —
+                            because that's the point.
+                        </p>
+                        <p class="max-w-xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-500" lang="ja">
+                            椎名朔（さくしいな）—
+                            フルスタックエンジニア。Astro・TypeScript・Rust・Go
+                            を使い、速くて美しいウェブプロダクトを作っています。
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-6">
+                        <!-- CTAs -->
+                        <div class="flex flex-wrap items-center gap-4">
+                            <a href="/blog/" class="btn-primary">
+                                Read the blog
+                                <span
+                                    class="i-lucide-arrow-right size-4"
+                                    aria-hidden="true"></span>
+                            </a>
+                            <a
+                                href="https://github.com/shiinasaku"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                class="btn-secondary"
+                            >
+                                <span class="i-mdi-github size-4" aria-hidden="true"
+                                ></span>
+                                GitHub
+                            </a>
+                        </div>
+
+                        <!-- Mini stats row -->
+                        <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
+                            <div class="flex items-center gap-2.5">
+                                <span
+                                    class="glow-dot size-2 rounded-full bg-emerald-400"
+                                ></span>
+                                <span
+                                    class="text-sm font-medium text-zinc-600 dark:text-zinc-400"
+                                    >Available for work</span
+                                >
+                            </div>
+                            <div
+                                class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500"
+                            >
+                                <span
+                                    class="i-lucide-map-pin size-4 text-rose-400"
+                                    aria-hidden="true"></span>
+                                <span>Based on the web</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right: 3D crystal -->
-                <div class="relative fade-in" style="animation-delay: 150ms;">
-                    <div
-                        class="relative aspect-square w-full max-w-md mx-auto lg:max-w-lg"
-                    >
-                        <!-- Multi-layer glow behind crystal -->
-                        <div
-                            class="absolute inset-0 rounded-full bg-gradient-radial from-rose-500/20 via-violet-500/10 to-transparent blur-3xl"
-                            aria-hidden="true"
-                        >
-                        </div>
-                        <div
-                            class="absolute inset-8 rounded-full bg-gradient-radial from-amber-400/10 via-rose-500/5 to-transparent blur-2xl"
-                            aria-hidden="true"
-                        >
-                        </div>
-                        <Art3D client:only="vue" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Scroll indicator -->
-            <div class="mt-16 flex justify-center sm:mt-20">
+                <!-- Waves cell -->
                 <div
-                    class="scroll-indicator flex flex-col items-center gap-1.5 text-zinc-400 dark:text-zinc-600"
+                    class="bento-cell spotlight-card fade-in relative min-h-64 overflow-hidden md:row-span-2"
+                    style="animation-delay: 120ms;"
                 >
-                    <span class="text-xs font-medium uppercase tracking-widest"
-                        >Scroll</span
+                    <div
+                        class="absolute inset-0 rounded-full bg-gradient-radial from-rose-500/20 via-violet-500/10 to-transparent blur-3xl"
+                        aria-hidden="true"
                     >
-                    <span class="i-lucide-arrow-down size-4" aria-hidden="true"
-                    ></span>
+                    </div>
+                    <Waves
+                        client:only="vue"
+                        :wave-speed-x="0.02"
+                        :wave-speed-y="0.008"
+                        :wave-amp-x="36"
+                        :wave-amp-y="18"
+                        :x-gap="14"
+                        :y-gap="40"
+                        :max-cursor-move="120"
+                    />
+                </div>
+
+                <!-- Latest post cell -->
+                {
+                    latestPost && (
+                        <a
+                            href={`/blog/${latestPost.id}/`}
+                            class="bento-cell spotlight-card card-hover fade-in group flex flex-col justify-between gap-4 p-6"
+                            style="animation-delay: 200ms;"
+                        >
+                            <div class="flex items-center justify-between">
+                                <span class="kicker">Latest essay</span>
+                                <span
+                                    class="i-lucide-arrow-up-right size-4 text-zinc-400 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-rose-500 dark:group-hover:text-rose-400"
+                                    aria-hidden="true"
+                                />
+                            </div>
+                            <div>
+                                <h3 class="font-display text-base font-semibold leading-snug text-zinc-900 transition-colors group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400 text-balance">
+                                    {latestPost.data.title}
+                                </h3>
+                                <time
+                                    datetime={latestPost.data.date.toISOString()}
+                                    class="mt-1.5 block text-xs font-medium text-zinc-500 dark:text-zinc-500"
+                                >
+                                    {latestPost.data.date.toLocaleDateString(
+                                        "en-US",
+                                        {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        },
+                                    )}
+                                </time>
+                            </div>
+                        </a>
+                    )
+                }
+
+                <!-- Link stack cell -->
+                <div
+                    class="bento-cell spotlight-card fade-in flex flex-col justify-center gap-2 p-5 sm:p-6 md:col-span-2"
+                    style="animation-delay: 280ms;"
+                >
+                    <a
+                        href="https://github.com/shiinasaku"
+                        target="_blank"
+                        rel="noreferrer noopener me"
+                        class="group flex items-center gap-3.5 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-zinc-100/80 dark:hover:bg-white/5"
+                    >
+                        <span
+                            class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                        >
+                            <span class="i-mdi-github size-4.5" aria-hidden="true"></span>
+                        </span>
+                        <span class="min-w-0 flex-1">
+                            <span class="block text-sm font-semibold text-zinc-900 dark:text-white">GitHub</span>
+                            <span class="block truncate text-xs text-zinc-500 dark:text-zinc-500">@shiinasaku — code &amp; projects</span>
+                        </span>
+                        <span class="i-lucide-arrow-up-right size-4 shrink-0 text-zinc-300 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-rose-500 dark:text-zinc-600" aria-hidden="true"></span>
+                    </a>
+                    <a
+                        href="https://x.com/saku_shiina"
+                        target="_blank"
+                        rel="noreferrer noopener me"
+                        class="group flex items-center gap-3.5 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-zinc-100/80 dark:hover:bg-white/5"
+                    >
+                        <span
+                            class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400"
+                        >
+                            <span class="i-tabler-brand-x size-4.5" aria-hidden="true"></span>
+                        </span>
+                        <span class="min-w-0 flex-1">
+                            <span class="block text-sm font-semibold text-zinc-900 dark:text-white">Twitter / X</span>
+                            <span class="block truncate text-xs text-zinc-500 dark:text-zinc-500">@saku_shiina — updates &amp; notes</span>
+                        </span>
+                        <span class="i-lucide-arrow-up-right size-4 shrink-0 text-zinc-300 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-rose-500 dark:text-zinc-600" aria-hidden="true"></span>
+                    </a>
+                    <div class="flex gap-2 px-3 pt-1">
+                        <a
+                            href="mailto:sakushiina@proton.me"
+                            class="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-zinc-600 transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-600 dark:bg-white/5 dark:text-zinc-400 dark:hover:text-rose-400"
+                        >
+                            <span class="i-tabler-mail-check size-3.5" aria-hidden="true"></span>
+                            Email
+                        </a>
+                        <a
+                            href="/rss.xml"
+                            class="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-zinc-600 transition-colors duration-200 hover:bg-orange-500/10 hover:text-orange-500 dark:bg-white/5 dark:text-zinc-400 dark:hover:text-orange-400"
+                        >
+                            <span class="i-lucide-rss size-3.5" aria-hidden="true"></span>
+                            RSS
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ════════════════ TECH MARQUEE ════════════════ -->
+    <!-- ════════════════ TECH LOGO LOOP ════════════════ -->
     <section
-        class="relative py-6 overflow-hidden border-y border-zinc-200/50 dark:border-white/5 marquee-fade"
+        class="relative overflow-hidden border-y border-zinc-200/50 py-8 dark:border-white/5"
     >
-        <div
-            class="marquee-track gap-12 py-2 text-sm font-display font-semibold text-zinc-400 dark:text-zinc-600"
-        >
-            {
-                [...marqueeItems, ...marqueeItems].map((item) => (
-                    <span class="flex items-center gap-12 whitespace-nowrap">
-                        {item}
-                        <span class="text-rose-400/40">◆</span>
-                    </span>
-                ))
-            }
-        </div>
+        <LogoLoop
+            client:visible
+            logos={techLogos}
+            speed={60}
+            direction="left"
+            logoHeight={26}
+            gap={56}
+            hoverSpeed={0}
+            fadeOut
+            scaleOnHover
+            ariaLabel="Technologies I work with"
+            className="text-zinc-400 dark:text-zinc-600"
+        />
     </section>
 
     <!-- ════════════════ CAPABILITIES BENTO ════════════════ -->
@@ -274,7 +385,7 @@ const accentMap: Record<string, string> = {
                 {
                     capabilities.map((cap) => (
                         <div
-                            class={`glass-border tilt-card p-6 sm:p-7 ${cap.span}`}
+                            class={`glass-border spotlight-card tilt-card p-6 sm:p-7 ${cap.span}`}
                         >
                             <div
                                 class={`mb-4 inline-flex size-11 items-center justify-center rounded-xl ${accentMap[cap.accent]}`}
@@ -308,7 +419,7 @@ const accentMap: Record<string, string> = {
             <div class="stagger grid gap-6 sm:grid-cols-3">
                 {
                     stackGroups.map((group) => (
-                        <div class="glass rounded-2xl p-6">
+                        <div class="glass spotlight-card rounded-2xl p-6">
                             <h3 class="mb-5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                                 {group.category}
                             </h3>
@@ -354,10 +465,10 @@ const accentMap: Record<string, string> = {
 
             <div class="stagger grid gap-4 md:grid-cols-3">
                 {
-                    posts.map((post) => (
+                    recentPosts.map((post) => (
                         <a
                             href={`/blog/${post.id}/`}
-                            class="glass card-hover group flex flex-col rounded-2xl p-6"
+                            class="glass spotlight-card card-hover group flex flex-col rounded-2xl p-6"
                         >
                             <div class="mb-3 flex items-center gap-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
                                 <time datetime={post.data.date.toISOString()}>

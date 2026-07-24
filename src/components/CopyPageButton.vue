@@ -112,7 +112,7 @@ function askClaude() {
 <template>
   <!-- Share technical segmented bar -->
   <div
-    class="inline-flex items-center rounded-md border border-taupe-200 bg-white/45 p-0.5 dark:border-ink-800 dark:bg-zinc-950/40 relative select-none"
+    class="inline-flex items-center rounded-md border border-zinc-200/60 bg-white/45 p-0.5 dark:border-ink-800 dark:bg-zinc-950/40 relative select-none"
   >
     <!-- Primary: share / copy link -->
     <button
@@ -138,7 +138,7 @@ function askClaude() {
 
     <!-- Vertical Divider -->
     <span
-      class="h-4 w-px shrink-0 bg-taupe-200 dark:bg-ink-800 my-auto mx-0.5"
+      class="h-4 w-px shrink-0 bg-zinc-200/60 dark:bg-ink-800 my-auto mx-0.5"
       aria-hidden="true"
     />
 
