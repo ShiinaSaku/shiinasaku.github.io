@@ -10,12 +10,15 @@ import tailwindcss from "@tailwindcss/vite";
 import astroTakumi from "astro-takumi";
 import { renderOgImage } from "./src/lib/ogRenderer.tsx";
 
+import cloudflare from "@astrojs/cloudflare";
+//ts-ignore
 const fontFile = (path) => fs.readFileSync(fileURLToPath(import.meta.resolve(path)));
 
 export default defineConfig({
   site: "https://shiina.xyz",
   output: "static",
   trailingSlash: "ignore",
+
   integrations: [
     mdx(),
     sitemap(),
@@ -57,7 +60,23 @@ export default defineConfig({
       render: renderOgImage,
     }),
   ],
+
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ["vue"],
+    },
+    optimizeDeps: {
+      // Keep vue out of the server dep optimizer — otherwise it serves
+      // @vue/runtime-core twice (raw + ?v= copies) and reka-ui's PopperRoot
+      // crashes in renderSlot during dev SSR/prerender. The Cloudflare
+      // adapter forwards this exclude to its server environments.
+      exclude: ["vue", "@vue/runtime-core", "@vue/server-renderer"],
+    },
   },
+
+  // Static site: compile optimized images at build time instead of the
+  // default "cloudflare-binding" runtime `/_image` transforms (which require
+  // a paid Cloudflare Images IMAGES binding and 404 without it).
+  adapter: cloudflare({ imageService: "compile" }),
 });
