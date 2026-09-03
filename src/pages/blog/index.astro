@@ -2,68 +2,95 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { getReadingTimeMinutes } from "../../lib/readingTime";
-import BlogFilter from "../../components/BlogFilter.vue";
-import CountUp from "../../components/CountUp.vue";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 
-const serializedPosts = posts.map((post) => ({
-    id: post.id,
-    title: post.data.title,
-    description: post.data.description,
-    date: post.data.date.toISOString(),
-    tags: post.data.tags,
-    readMinutes: getReadingTimeMinutes(post.body ?? ""),
-}));
+const postsByYear = posts.reduce<Record<number, typeof posts>>((acc, post) => {
+    const year = post.data.date.getFullYear();
+    (acc[year] ??= []).push(post);
+    return acc;
+}, {});
+
+const years = Object.keys(postsByYear)
+    .map(Number)
+    .sort((a, b) => b - a);
 ---
 
 <BaseLayout
-    title="Blog — Saku Shiina"
-    description="Long-form essays on engineering strategy, frontend architecture, and search-first product execution."
+    title="Writing — Saku Shiina"
+    description="Essays on frontend architecture, performance, and the craft of building for the web."
     activePath="/blog/"
 >
-    <script is:inline>
-        if (window.location.search.includes("tag=")) {
-            const meta = document.createElement("meta");
-            meta.name = "robots";
-            meta.content = "noindex, follow";
-            document.head.appendChild(meta);
-        }
-    </script>
-
-    <!-- Header -->
-    <section class="relative pt-28 pb-8 sm:pt-36">
+    <section class="pt-20 pb-16 sm:pt-28">
         <div class="container-page">
-            <div class="reveal max-w-3xl flex flex-col items-start gap-4">
-                <span class="kicker">Essays</span>
-                <h1 class="title-display">
-                    Technical writing with execution detail.
-                </h1>
-                <p class="body-copy max-w-2xl">
-                    Notes from building production web systems: architecture tradeoffs,
-                    UX clarity, and performance outcomes that actually move web metrics.
+            <div class="reveal max-w-2xl">
+                <p class="kicker">Blog</p>
+                <h1 class="title-display mt-5">Notes from the workshop.</h1>
+                <p class="body-copy mt-5">
+                    Long-form writing on architecture tradeoffs, performance,
+                    and interface craft — with the execution detail left in.
                 </p>
-                <p class="jp-accent" lang="ja">実装・設計・改善の記録。</p>
-
-                <!-- Post count stat -->
-                <div class="mt-2 inline-flex items-center gap-3 rounded-2xl glass px-5 py-3">
-                    <span class="font-display text-2xl font-bold text-rose-600 dark:text-rose-400"><CountUp client:visible end={posts.length} /></span>
-                    <div class="flex flex-col text-left">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">essays published</span>
-                        <span class="text-[10px] font-medium text-zinc-400 dark:text-zinc-600" lang="ja">記事公開中</span>
-                    </div>
-                </div>
+                <p class="jp-accent mt-3" lang="ja">実装・設計・改善の記録。</p>
             </div>
-        </div>
-    </section>
 
-    <!-- List -->
-    <section class="relative pb-20 sm:pb-28">
-        <div class="container-page">
-            <div class="max-w-4xl mx-auto reveal">
-                <BlogFilter client:load posts={serializedPosts} />
+            <div class="mt-16 flex flex-col gap-14">
+                {
+                    years.map((year) => (
+                        <div class="reveal">
+                            <div class="flex items-baseline gap-4">
+                                <h2 class="font-display text-4xl font-extrabold text-accent-600/90 dark:text-accent-400/90">
+                                    {year}
+                                </h2>
+                                <span class="text-xs font-medium text-stone-400 dark:text-stone-600">
+                                    {postsByYear[year].length} {postsByYear[year].length === 1 ? "essay" : "essays"}
+                                </span>
+                                <div class="h-px flex-1 bg-stone-200 dark:bg-stone-800" aria-hidden="true" />
+                            </div>
+                            <div class="mt-6 flex flex-col">
+                                {postsByYear[year].map((post) => (
+                                    <a
+                                        href={`/blog/${post.id}/`}
+                                        class="group -mx-4 flex items-baseline gap-6 rounded-lg border-b hairline px-4 py-6 transition-colors hover:bg-white dark:hover:bg-white/3"
+                                    >
+                                        <time
+                                            datetime={post.data.date.toISOString()}
+                                            class="w-28 shrink-0 pt-1 text-xs font-medium text-stone-400 dark:text-stone-600"
+                                        >
+                                            {post.data.date.toLocaleDateString("en-US", {
+                                                month: "short",
+                                                day: "numeric",
+                                            })}
+                                        </time>
+                                        <span class="min-w-0 flex-1">
+                                            <span class="title-card block text-xl transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
+                                                {post.data.title}
+                                            </span>
+                                            <span class="mt-2 block max-w-2xl text-sm leading-relaxed text-stone-500 dark:text-stone-500">
+                                                {post.data.description}
+                                            </span>
+                                            <span class="mt-3 flex flex-wrap items-center gap-2.5 text-xs font-medium text-stone-400 dark:text-stone-600">
+                                                <span>
+                                                    {getReadingTimeMinutes(post.body ?? "")} min read
+                                                </span>
+                                                {post.data.tags.map((tag) => (
+                                                    <span class="rounded-md bg-stone-100 px-2 py-0.5 dark:bg-white/5">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </span>
+                                        </span>
+                                        <span
+                                            class="i-lucide-arrow-up-right size-4 shrink-0 self-center text-stone-300 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-600 dark:text-stone-700 dark:group-hover:text-accent-400"
+                                            aria-hidden="true"
+                                        />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
             </div>
         </div>
     </section>

@@ -1,4 +1,3 @@
-/** Average reading speed in words per minute */
 const WPM = 200;
 
 /**

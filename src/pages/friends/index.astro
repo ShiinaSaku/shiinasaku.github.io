@@ -1,54 +1,128 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { friends } from "../../lib/friends";
-import FriendsGallery from "../../components/FriendsGallery.vue";
-import CountUp from "../../components/CountUp.vue";
+import type { FriendLinkType } from "../../data/friends";
+import avatar from "../../assets/avatar.png";
 
-const serializedFriends = friends.map((f) => ({
-    name: f.name,
-    avatarUrl: f.avatarUrl,
-    location: f.location,
-    description: f.description,
-    links: f.links,
-}));
+const linkIcons: Record<FriendLinkType, string> = {
+    website: "i-lucide-globe",
+    blog: "i-lucide-pencil-line",
+    github: "i-simple-icons-github",
+    twitter: "i-simple-icons-x",
+};
+
+const linkColors: Record<FriendLinkType, string> = {
+    website:
+        "hover:border-sky-400/70 hover:text-sky-600 dark:hover:text-sky-400",
+    blog: "hover:border-accent-400/70 hover:text-accent-600 dark:hover:text-accent-400",
+    github: "hover:border-stone-500/70 hover:text-stone-900 dark:hover:text-stone-100",
+    twitter:
+        "hover:border-stone-500/70 hover:text-stone-900 dark:hover:text-stone-100",
+};
 ---
 
 <BaseLayout
     title="Friends — Saku Shiina"
-    description="A curated network of talented people across the web. Curated slowly, appreciated deeply."
+    description="People I'm glad to know — from code, art, and everywhere in between. A small thank-you to good friends."
     activePath="/friends/"
 >
-    <!-- Header -->
-    <section class="relative pt-28 pb-8 sm:pt-36">
+    <section class="pt-20 pb-16 sm:pt-28">
         <div class="container-page">
-            <div class="reveal max-w-3xl flex flex-col items-start gap-4">
-                <span class="kicker">Connections</span>
-                <h1 class="title-display">
-                    People who make the web better.
+            <div class="reveal max-w-2xl">
+                <p class="kicker">Friends</p>
+                <h1 class="title-display mt-5">
+                    Good people, glad to know them.
                 </h1>
-                <p class="body-copy max-w-2xl">
-                    A curated network of talented creators, engineers, and artists
-                    across the independent web. Curated slowly, appreciated deeply.
+                <p class="body-copy mt-5">
+                    Friends come from everywhere — code, art, games, late-night
+                    conversations. Writing code was never the entry requirement.
+                    This page is a small thank-you.
                 </p>
-                <p class="jp-accent" lang="ja">好奇心を刺激してくれる人たち。</p>
+                <p class="jp-accent mt-3" lang="ja">大切な人たちの記録。</p>
+            </div>
 
-                <!-- Friend count stat -->
-                <div class="mt-2 inline-flex items-center gap-3 rounded-2xl glass px-5 py-3">
-                    <span class="font-display text-2xl font-bold text-rose-600 dark:text-rose-400"><CountUp client:visible end={friends.length} /></span>
-                    <div class="flex flex-col text-left">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">people listed</span>
-                        <span class="text-[10px] font-medium text-zinc-400 dark:text-zinc-600" lang="ja">掲載人数</span>
+            <div class="stagger mt-14 flex flex-col gap-5">
+                {
+                    friends.map((friend) => (
+                        <div class="group flex flex-col gap-5 rounded-xl border hairline bg-white p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-400/50 hover:shadow-md sm:flex-row sm:items-center dark:bg-white/3 dark:hover:border-accent-400/40">
+                            <img
+                                src={friend.avatarUrl}
+                                alt={`${friend.name} avatar`}
+                                width={56}
+                                height={56}
+                                loading="lazy"
+                                decoding="async"
+                                class="size-14 shrink-0 rounded-full object-cover ring-2 ring-accent-500/30 transition-shadow duration-300 group-hover:ring-accent-500/60"
+                            />
+                            <div class="min-w-0 flex-1">
+                                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                    <p class="font-display text-lg font-bold text-stone-900 dark:text-stone-100">
+                                        {friend.name}
+                                    </p>
+                                    <span class="text-xs font-medium text-stone-400 dark:text-stone-600">
+                                        {friend.location}
+                                    </span>
+                                </div>
+                                <p class="mt-1.5 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+                                    {friend.description}
+                                </p>
+                            </div>
+                            <div class="flex shrink-0 items-center gap-2">
+                                {friend.links.map((link) => (
+                                    <a
+                                        href={link.url}
+                                        target="_blank"
+                                        rel="noreferrer noopener"
+                                        aria-label={`${friend.name} — ${link.type}`}
+                                        title={link.type}
+                                        class={`inline-flex size-9 items-center justify-center rounded-lg border hairline text-stone-400 transition-all duration-200 hover:-translate-y-0.5 dark:text-stone-500 ${linkColors[link.type]}`}
+                                    >
+                                        <span
+                                            class={`${linkIcons[link.type]} size-4`}
+                                            aria-hidden="true"
+                                        />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+
+            <div
+                class="reveal mt-14 flex items-center justify-between gap-6 rounded-xl border hairline bg-accent-500/3 p-6 sm:ml-auto sm:max-w-md dark:bg-accent-500/5"
+            >
+                <div class="flex items-center gap-4">
+                    <Image
+                        src={avatar}
+                        alt="Saku Shiina"
+                        width={96}
+                        height={96}
+                        quality={90}
+                        class="size-12 shrink-0 rounded-full object-cover ring-2 ring-accent-500/50"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                    <div>
+                        <p
+                            class="font-display text-base font-bold text-stone-900 dark:text-stone-100"
+                        >
+                            Know each other?
+                        </p>
+                        <p class="text-xs text-stone-500 dark:text-stone-500">
+                            Say hi — I'd love to add you here.
+                        </p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery -->
-    <section class="relative pb-20 sm:pb-28">
-        <div class="container-page">
-            <div class="reveal">
-                <FriendsGallery client:load friends={serializedFriends} />
+                <a
+                    href="mailto:sakushiina@proton.me"
+                    class="btn-primary shrink-0 px-4! py-2! text-xs"
+                >
+                    <span class="i-lucide-mail size-3.5" aria-hidden="true"
+                    ></span>
+                    Email
+                </a>
             </div>
         </div>
     </section>

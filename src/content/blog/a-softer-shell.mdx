@@ -1,0 +1,61 @@
+---
+title: "A Softer Shell: Rebuilding shiina.xyz Around One Typeface"
+description: "Why I stripped this site down to one typeface, one accent color, and a cat badge — and what a squishy display font taught me about restraint."
+date: 2026-09-03
+tags: ["design", "astro", "typography"]
+---
+
+import Pill from "../../components/mdx/Pill.astro";
+
+This site has gone through more redesigns than I'd like to admit. Bento grids, WebGL waves, rotating headlines, a logo marquee — if it shimmered, it shipped here at some point. Each version was a little louder than the last.
+
+This one goes the other way. It's built around a single idea: <strong>a warm page, one typeface, one accent color</strong> — and nothing else competing for attention.
+
+## One typeface, with opinions
+
+Everything you're reading is set in one rounded display family, with a rounded Gothic companion covering Japanese. Plump letterforms, short ascenders, a huge x-height — the kind of face that makes every headline look like it's smiling.
+
+Pairing Latin and CJK is where most sites fall apart. Terminals don't match, weights don't line up, and the moment a sentence switches scripts, the rhythm breaks. Getting two families to agree took more time than any other decision on this page:
+
+```css
+/* Latin first, Japanese fallback — everywhere, with no exceptions */
+:root {
+  font-family: var(--font-sans);
+}
+
+:lang(ja) {
+  font-family: var(--font-jp);
+}
+```
+
+Both are self-hosted, preloaded, and swap cleanly. No font CDN, no layout shift.
+
+## One color, used sparingly
+
+<Pill text="朱 (shu)" /> — vermilion — is the only color on this site. It comes from traditional
+Japanese palettes, and it earns its keep by being rare. Buttons, links, the occasional sticker.
+Everything else is paper and ink:
+
+```ts
+const palette = {
+  paper: "#faf9f5",
+  ink: "#1c1917",
+  accent: "#d4542f", // vermilion — see how rarely it appears
+} as const;
+```
+
+> If everything is highlighted, nothing is. Restraint isn't the absence of design — it's the design.
+
+## Small things, done on purpose
+
+What replaced the fireworks:
+
+- **Selection color** — highlight any text. Vermilion, readable, no invisible glyphs.
+- **Sound feedback** — tiny synthesized blips on buttons. No audio files, no libraries, mutable in one click.
+- **A cat badge** — because a portfolio without at least one unnecessary detail is just a résumé.
+
+## The part that mattered
+
+The lesson wasn't "minimalism good, gradients bad." It's that every element you cut makes the remaining ones louder — so you'd better be confident about what stays. I'm confident about this one: type, whitespace, a little warmth, <em>にゃ〜</em>.
+
+The gradients are gone. The calm stayed.

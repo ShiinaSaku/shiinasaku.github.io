@@ -1,0 +1,18 @@
+# Saku Shiina — 椎名 朔
+
+Independent full-stack engineer (EN/JA). Builds fast, calm web products with Astro, Vue, TypeScript, Rust, and Go. Writes long-form essays on frontend architecture, performance, and interface craft.
+
+## Pages
+
+- [Home](https://shiina.xyz/): Portfolio, about, and current focus.
+- [Writing](https://shiina.xyz/blog/): Essays on engineering, architecture, and design.
+- [Friends](https://shiina.xyz/friends/): People across the independent web.
+
+## Facts
+
+- Name: Saku Shiina (椎名 朔 / さくしいな)
+- Role: Full-Stack Engineer
+- Contact: sakushiina@proton.me
+- Social: https://github.com/shiinasaku · https://x.com/saku_shiina
+- Languages: English, Japanese
+- Syndication: https://shiina.xyz/rss.xml

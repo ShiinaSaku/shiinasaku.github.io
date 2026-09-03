@@ -1,6 +1,6 @@
 export type FriendLinkType = "website" | "blog" | "github" | "twitter";
 
-export interface FriendLink {
+interface FriendLink {
   type: FriendLinkType;
   url: string;
 }

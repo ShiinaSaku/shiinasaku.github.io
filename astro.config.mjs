@@ -1,4 +1,3 @@
-// @ts-check
 import * as fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
@@ -10,8 +9,7 @@ import tailwindcss from "@tailwindcss/vite";
 import astroTakumi from "astro-takumi";
 import { renderOgImage } from "./src/lib/ogRenderer.tsx";
 
-import cloudflare from "@astrojs/cloudflare";
-//ts-ignore
+// @ts-ignore
 const fontFile = (path) => fs.readFileSync(fileURLToPath(import.meta.resolve(path)));
 
 export default defineConfig({
@@ -27,27 +25,31 @@ export default defineConfig({
       options: {
         fonts: [
           {
-            name: "Space Grotesk",
-            weight: 500,
-            data: fontFile("@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2"),
-          },
-          {
-            name: "Space Grotesk",
+            name: "Ciruela",
             weight: 700,
-            data: fontFile("@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2"),
+            data: fs.readFileSync("public/fonts/CiruelaDEMO-Bold.otf"),
           },
           {
-            name: "Noto Sans JP",
+            name: "Ciruela",
+            weight: 800,
+            data: fs.readFileSync("public/fonts/CiruelaDEMO-ExtraBold.otf"),
+          },
+          {
+            name: "Zen Maru Gothic",
             weight: 400,
-            data: fontFile("@fontsource/noto-sans-jp/files/noto-sans-jp-japanese-400-normal.woff2"),
+            data: fontFile(
+              "@fontsource/zen-maru-gothic/files/zen-maru-gothic-japanese-400-normal.woff2",
+            ),
           },
           {
-            name: "Noto Sans JP",
+            name: "Zen Maru Gothic",
             weight: 700,
-            data: fontFile("@fontsource/noto-sans-jp/files/noto-sans-jp-japanese-700-normal.woff2"),
+            data: fontFile(
+              "@fontsource/zen-maru-gothic/files/zen-maru-gothic-japanese-700-normal.woff2",
+            ),
           },
         ],
-        fontFamilies: ["Space Grotesk", "Noto Sans JP"],
+        fontFamilies: ["Ciruela", "Zen Maru Gothic"],
         images: [
           {
             src: "avatar",
@@ -75,8 +77,12 @@ export default defineConfig({
     },
   },
 
-  // Static site: compile optimized images at build time instead of the
-  // default "cloudflare-binding" runtime `/_image` transforms (which require
-  // a paid Cloudflare Images IMAGES binding and 404 without it).
-  adapter: cloudflare({ imageService: "compile" }),
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "vitesse-light",
+        dark: "vitesse-dark",
+      },
+    },
+  },
 });

@@ -55,8 +55,20 @@ const person = {
     "https://x.com/saku_shiina",
   ],
   jobTitle: "Full-Stack Engineer",
+  description: description,
   knowsLanguage: ["en", "ja"],
-  knowsAbout: ["Astro", "Rust", "Go", "Bun", "TypeScript", "UnoCSS", "Vue", "React", "Next.js", "Nuxt.js"],
+  knowsAbout: ["Astro", "Rust", "Go", "Bun", "TypeScript", "Vue", "React", "Next.js", "Nuxt.js", "Web performance", "UI engineering"],
+  email: "mailto:sakushiina@proton.me",
+};
+
+// Some parsers don't resolve @id references — inline a full author object.
+const authorRef = {
+  "@type": "Person",
+  "@id": `${siteOrigin}/#person`,
+  name: siteName,
+  url: siteOrigin,
+  image: `${siteOrigin}/avatar-512.png`,
+  sameAs: person.sameAs,
 };
 
 const websiteSchema = {
@@ -110,7 +122,7 @@ const articleSchema =
         dateModified: articleModified,
         mainEntityOfPage: canonical,
         inLanguage: "en",
-        author: { "@id": `${siteOrigin}/#person` },
+        author: authorRef,
         keywords: tags.join(", "),
         ...(wordCount && { wordCount }),
       }
@@ -168,6 +180,7 @@ const ogImage = getImagePath({ url: Astro.url, site: Astro.site, format: "webp" 
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={`Portrait of ${siteName}`} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 {type === "article" && articlePublished && <meta property="article:published_time" content={articlePublished} />}

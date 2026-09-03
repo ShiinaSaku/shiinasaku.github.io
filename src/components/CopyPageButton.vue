@@ -112,18 +112,19 @@ function askClaude() {
 <template>
   <!-- Share technical segmented bar -->
   <div
-    class="inline-flex items-center rounded-md border border-zinc-200/60 bg-white/45 p-0.5 dark:border-ink-800 dark:bg-zinc-950/40 relative select-none"
+    class="inline-flex items-center rounded-lg border border-stone-200/60 bg-white/45 p-0.5 dark:border-stone-800 dark:bg-stone-950/40 relative select-none"
   >
     <!-- Primary: share / copy link -->
     <button
       type="button"
       @click="handlePrimaryShare"
+      data-sound="chime"
       :aria-label="copiedUrl ? 'Link copied!' : canNativeShare ? 'Share this article' : 'Copy link'"
-      class="inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-semibold hover:bg-rose-500/5 cursor-pointer transition-all duration-150 outline-none select-none"
+      class="inline-flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-semibold hover:bg-accent-500/10 cursor-pointer transition-all duration-150 outline-none select-none"
       :class="
         copiedUrl
           ? 'text-emerald-600 dark:text-emerald-400'
-          : 'text-ink-700 hover:text-rose-600 dark:text-pink-100 dark:hover:text-rose-400'
+          : 'text-stone-700 hover:text-accent-600 dark:text-stone-200 dark:hover:text-accent-400'
       "
     >
       <span
@@ -138,7 +139,7 @@ function askClaude() {
 
     <!-- Vertical Divider -->
     <span
-      class="h-4 w-px shrink-0 bg-zinc-200/60 dark:bg-ink-800 my-auto mx-0.5"
+      class="h-4 w-px shrink-0 bg-stone-200/60 dark:bg-stone-800 my-auto mx-0.5"
       aria-hidden="true"
     />
 
@@ -147,7 +148,7 @@ function askClaude() {
       <DropdownMenuTrigger as-child>
         <button
           type="button"
-          class="inline-flex items-center justify-center rounded-sm p-1 text-ink-700 hover:text-rose-600 hover:bg-rose-500/5 dark:text-pink-100 dark:hover:text-rose-400 cursor-pointer transition-all duration-150 outline-none"
+          class="inline-flex items-center justify-center rounded p-1 text-stone-700 hover:text-accent-600 hover:bg-accent-500/10 dark:text-stone-200 dark:hover:text-accent-400 cursor-pointer transition-all duration-150 outline-none"
           aria-label="More article actions"
         >
           <span class="i-lucide-ellipsis h-3.5 w-3.5" aria-hidden="true" />
@@ -157,7 +158,7 @@ function askClaude() {
       <DropdownMenuContent class="w-64" align="end">
         <!-- Export section -->
         <DropdownMenuLabel
-          class="text-[9px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500"
+          class="text-[9px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500"
           >Export</DropdownMenuLabel
         >
 
@@ -174,7 +175,7 @@ function askClaude() {
             />
             <div class="flex min-w-0 flex-col items-start text-left">
               <span>{{ copiedUrl ? "Copied!" : "Copy link" }}</span>
-              <span class="text-[10px] text-ink-500 dark:text-ink-400"
+              <span class="text-[10px] text-stone-500 dark:text-stone-400"
                 >Shareable URL for this post</span
               >
             </div>
@@ -194,7 +195,7 @@ function askClaude() {
             />
             <div class="flex min-w-0 flex-col items-start text-left">
               <span>{{ copiedMd ? "Copied!" : "Copy as Markdown" }}</span>
-              <span class="text-[10px] text-ink-500 dark:text-ink-400"
+              <span class="text-[10px] text-stone-500 dark:text-stone-400"
                 >Full article with title &amp; metadata</span
               >
             </div>
@@ -210,7 +211,7 @@ function askClaude() {
             <span class="i-lucide-file-text h-4 w-4 shrink-0" aria-hidden="true" />
             <div class="flex min-w-0 flex-col items-start text-left">
               <span>View raw .md file</span>
-              <span class="text-[10px] text-ink-500 dark:text-ink-400"
+              <span class="text-[10px] text-stone-500 dark:text-stone-400"
                 >Open the Markdown source in browser</span
               >
             </div>
@@ -221,7 +222,7 @@ function askClaude() {
 
         <!-- AI section -->
         <DropdownMenuLabel
-          class="text-[9px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500"
+          class="text-[9px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500"
           >Ask AI</DropdownMenuLabel
         >
 
@@ -234,7 +235,7 @@ function askClaude() {
             <span class="i-simple-icons-openai h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <div class="flex min-w-0 flex-col items-start text-left">
               <span>Open in ChatGPT</span>
-              <span class="text-[10px] text-ink-500 dark:text-ink-400"
+              <span class="text-[10px] text-stone-500 dark:text-stone-400"
                 >Summarize &amp; discuss this article</span
               >
             </div>
@@ -250,7 +251,7 @@ function askClaude() {
             <span class="i-simple-icons-anthropic h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <div class="flex min-w-0 flex-col items-start text-left">
               <span>Open in Claude</span>
-              <span class="text-[10px] text-ink-500 dark:text-ink-400"
+              <span class="text-[10px] text-stone-500 dark:text-stone-400"
                 >Analyze ideas and practical takeaways</span
               >
             </div>

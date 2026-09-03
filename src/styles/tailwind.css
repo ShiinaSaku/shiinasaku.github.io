@@ -1,46 +1,46 @@
-/* ── shadcn/ui CSS variables — aligned with the rose/pink/mauve brand ──
-   Mapped to a neutral zinc base + rose accent so every reka-ui component
-   surface reads consistently in both light and dark themes. */
-
+/*
+ * shadcn/ui CSS variables. Paper & ink palette with a vermilion
+ * accent, consistent in both themes.
+ */
 :root {
-  --radius: 0.625rem;
-  --background: #fafafa;
-  --foreground: #18181b;
+  --radius: 0.75rem;
+  --background: #faf9f5;
+  --foreground: #1c1917;
   --card: #ffffff;
-  --card-foreground: #18181b;
+  --card-foreground: #1c1917;
   --popover: #ffffff;
-  --popover-foreground: #18181b;
-  --primary: #df3778;
-  --primary-foreground: #fff1f6;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #27272a;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #ffeef6;
-  --accent-foreground: #b9275f;
+  --popover-foreground: #1c1917;
+  --primary: #d4542f;
+  --primary-foreground: #fdf5f3;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #292524;
+  --muted: #f5f5f4;
+  --muted-foreground: #78716c;
+  --accent: #fbe9e5;
+  --accent-foreground: #9c321d;
   --destructive: #ef4444;
-  --border: #e4e4e7;
-  --input: #d4d4d8;
-  --ring: #f47bab;
+  --border: #e7e5e4;
+  --input: #d6d3d1;
+  --ring: #d4542f;
 
   @variant dark {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --card: #18181b;
-    --card-foreground: #fafafa;
-    --popover: #18181b;
-    --popover-foreground: #fafafa;
-    --primary: #f75192;
-    --primary-foreground: #791c42;
-    --secondary: #27272a;
-    --secondary-foreground: #e4e4e7;
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
-    --accent: #27272a;
-    --accent-foreground: #ff9fc4;
+    --background: #14120f;
+    --foreground: #e7e5e4;
+    --card: #1c1917;
+    --card-foreground: #e7e5e4;
+    --popover: #1c1917;
+    --popover-foreground: #e7e5e4;
+    --primary: #d4542f;
+    --primary-foreground: #14120f;
+    --secondary: #292524;
+    --secondary-foreground: #e7e5e4;
+    --muted: #292524;
+    --muted-foreground: #a8a29e;
+    --accent: #292524;
+    --accent-foreground: #eda999;
     --destructive: #f87171;
-    --border: rgba(255, 255, 255, 0.1);
-    --input: rgba(255, 255, 255, 0.15);
-    --ring: #f47bab;
+    --border: rgba(231, 229, 228, 0.12);
+    --input: rgba(231, 229, 228, 0.16);
+    --ring: #d4542f;
   }
 }

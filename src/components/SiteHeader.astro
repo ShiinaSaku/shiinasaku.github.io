@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
 import ModeToggle from "./ModeToggle.vue";
-import PillNav from "./PillNav.vue";
+import SoundToggle from "./SoundToggle.vue";
+import avatar from "../assets/avatar.png";
 
 interface Props {
     activePath?: string;
@@ -9,36 +11,51 @@ interface Props {
 const { activePath = "/" } = Astro.props;
 
 const menuItems = [
-    { label: "Home", href: "/", ariaLabel: "Home" },
-    { label: "Blog", href: "/blog/", ariaLabel: "Blog" },
-    { label: "Friends", href: "/friends/", ariaLabel: "Friends" },
+    { label: "Writing", href: "/blog/" },
+    { label: "Friends", href: "/friends/" },
 ];
 ---
 
-<PillNav
-    client:load
-    logo="/avatar-128.png"
-    logoAlt="Saku Shiina avatar"
-    logoHref="/"
-    items={menuItems}
-    activeHref={activePath}
-    baseColor="var(--foreground)"
-    pillColor="var(--card)"
-    pillTextColor="var(--foreground)"
-    hoveredPillTextColor="var(--card)"
-    ease="power3.easeOut"
-    initialLoadAnimation
->
-    <Fragment slot="actions">
-        <button
-            type="button"
-            aria-label="Open command palette"
-            onclick="window.dispatchEvent(new Event('open-command-palette'))"
-            class="inline-flex size-9 items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-105 cursor-pointer"
-            style="background: var(--card); color: var(--foreground);"
+<header class="sticky top-0 z-50 border-b hairline bg-[#faf9f5]/85 backdrop-blur-md dark:bg-[#14120f]/85">
+    <div class="container-page flex h-16 items-center justify-between">
+        <a
+            href="/"
+            class="group flex items-center gap-2.5"
+            aria-label="Home"
         >
-            <span class="i-lucide-search size-4" aria-hidden="true"></span>
-        </button>
-        <ModeToggle client:only="vue" />
-    </Fragment>
-</PillNav>
+            <Image
+                src={avatar}
+                alt="Saku Shiina avatar"
+                width={64}
+                height={64}
+                quality={90}
+                class="size-8 rounded-full object-cover ring-2 ring-accent-500/60 transition-transform duration-300 group-hover:rotate-6"
+                loading="eager"
+                decoding="async"
+            />
+            <span class="font-display text-base font-bold tracking-tight text-stone-900 dark:text-stone-100">
+                Saku Shiina
+            </span>
+            <span class="jp-accent hidden sm:inline" lang="ja">椎名 朔</span>
+        </a>
+
+        <nav class="flex items-center gap-1" aria-label="Main">
+            {menuItems.map((item) => (
+                <a
+                    href={item.href}
+                    aria-current={activePath === item.href ? "page" : undefined}
+                    class:list={[
+                        "rounded-lg px-3.5 py-2 text-sm font-bold transition-colors",
+                        activePath === item.href
+                            ? "bg-accent-500/10 text-accent-600 dark:text-accent-400"
+                            : "text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100",
+                    ]}
+                >
+                    {item.label}
+                </a>
+            ))}
+            <SoundToggle client:only="vue" />
+            <ModeToggle client:only="vue" />
+        </nav>
+    </div>
+</header>
