@@ -1,31 +1,19 @@
 <script lang="ts">
-  type ThemeMode = "light" | "dark";
+  import { toggleMode } from "mode-watcher";
 
-  let isDark = $state(false);
-
-  function applyMode(next: ThemeMode) {
-    localStorage.setItem("theme", next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-  }
-
-  function toggleMode() {
-    const next: ThemeMode = isDark ? "light" : "dark";
+  function handleToggle() {
     if (!document.startViewTransition) {
-      applyMode(next);
+      toggleMode();
       return;
     }
-    document.startViewTransition(() => applyMode(next));
+    document.startViewTransition(() => toggleMode());
   }
-
-  $effect(() => {
-    isDark = document.documentElement.classList.contains("dark");
-  });
 </script>
 
 <button
   type="button"
   class="relative inline-flex size-9 cursor-pointer items-center justify-center rounded-lg text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-  onclick={toggleMode}
+  onclick={handleToggle}
   data-sound="pop"
   aria-label="Toggle theme"
 >

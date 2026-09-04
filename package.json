@@ -22,6 +22,7 @@
     "@thenormvg/web-have-sounds": "^1.6.3",
     "astro": "^7.3.1",
     "astro-takumi": "^2.0.1",
+    "mode-watcher": "0.5.1",
     "sharp": "^0.35.4",
     "svelte": "^5.57.0",
     "tailwindcss": "^4.3.3"
@@ -42,5 +43,15 @@
     "react": "^19.2.8",
     "svelte-check": "^4.7.6",
     "typescript": "^6.0.3"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "12.0.2",
+      "onFail": "download"
+    }
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
