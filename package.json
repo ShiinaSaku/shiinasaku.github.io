@@ -43,11 +43,5 @@
     "svelte-check": "^4.7.6",
     "typescript": "^6.0.3"
   },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "12.2.1",
-      "onFail": "download"
-    }
-  }
+  "packageManager": "pnpm@12.3.1"
 }

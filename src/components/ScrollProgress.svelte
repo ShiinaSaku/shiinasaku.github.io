@@ -16,7 +16,7 @@
 </script>
 
 <div
-  class="fixed top-0 left-0 z-[999] h-[2px] w-full origin-left bg-accent-500 transition-transform duration-[80ms] ease-linear dark:bg-accent-400"
+  class="fixed top-0 left-0 z-999 h-0.5 w-full origin-left bg-accent-500 transition-transform duration-80 ease-linear dark:bg-accent-400"
   style:transform={`scaleX(${progress / 100})`}
   role="progressbar"
   aria-valuenow={Math.round(progress)}
