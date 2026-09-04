@@ -3,8 +3,8 @@ import { Picture } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { getReadingTimeMinutes, getWordCount } from "../../lib/readingTime";
-import CopyPageButton from "../../components/CopyPageButton.vue";
-import ReadingProgress from "../../components/ReadingProgress.vue";
+import ShareButton from "../../components/ShareButton.svelte";
+import ScrollProgress from "../../components/ScrollProgress.svelte";
 import avatarImage from "../../assets/avatar.png";
 
 export const prerender = true;
@@ -53,7 +53,7 @@ const wordCount = getWordCount(body);
     tags={post.data.tags}
     wordCount={wordCount}
 >
-    <ReadingProgress client:only="vue" />
+    <ScrollProgress client:load />
 
     {
         tocHeadings.length > 1 && (
@@ -136,7 +136,7 @@ const wordCount = getWordCount(body);
                             {wordCount.toLocaleString()} words
                         </span>
                     </div>
-                    <CopyPageButton
+                    <ShareButton
                         client:load
                         body={body}
                         slug={slug}

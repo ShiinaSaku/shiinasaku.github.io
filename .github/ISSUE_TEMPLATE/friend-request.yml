@@ -1,0 +1,56 @@
+name: Friend request
+description: Ask to be added to shiina.xyz/friends
+labels: [friend-request]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for wanting to be friends! Fill this in and submit —
+        once it passes checks, [shiina.xyz/friends](https://shiina.xyz/friends/)
+        rebuilds and ships automatically.
+
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: What should the card call you?
+      placeholder: friend
+    validations:
+      required: true
+
+  - type: input
+    id: avatar-url
+    attributes:
+      label: Avatar URL
+      description: Direct link to a image (https, png/jpg/webp/gif, ≤2 MB). We download and serve it from shiina.xyz.
+      placeholder: https://example.com/avatar.png
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      placeholder: Tokyo
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: One line about you. Emoji welcome.
+      placeholder: Bakes bread, ships Rust, owns zero chairs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: links
+    attributes:
+      label: Links
+      description: 'One per line: `type url` — type is one of website, blog, github, twitter.'
+      placeholder: |
+        blog https://example.com/blog
+        github https://github.com/you
+    validations:
+      required: true

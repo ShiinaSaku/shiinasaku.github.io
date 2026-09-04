@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import ModeToggle from "./ModeToggle.vue";
-import SoundToggle from "./SoundToggle.vue";
+import ThemeToggle from "./ThemeToggle.svelte";
+import SoundToggle from "./SoundToggle.svelte";
 import avatar from "../assets/avatar.png";
 
 interface Props {
@@ -17,10 +17,10 @@ const menuItems = [
 ---
 
 <header class="sticky top-0 z-50 border-b hairline bg-[#faf9f5]/85 backdrop-blur-md dark:bg-[#14120f]/85">
-    <div class="container-page flex h-16 items-center justify-between">
+    <div class="container-page flex h-16 items-center justify-between gap-3">
         <a
             href="/"
-            class="group flex items-center gap-2.5"
+            class="group flex shrink-0 items-center gap-2 sm:gap-2.5"
             aria-label="Home"
         >
             <Image
@@ -29,23 +29,30 @@ const menuItems = [
                 width={64}
                 height={64}
                 quality={90}
-                class="size-8 rounded-full object-cover ring-2 ring-accent-500/60 transition-transform duration-300 group-hover:rotate-6"
+                class="size-8 rounded-full object-cover ring-2 ring-accent-500/50 transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-6 group-hover:ring-accent-500"
                 loading="eager"
                 decoding="async"
             />
-            <span class="font-display text-base font-bold tracking-tight text-stone-900 dark:text-stone-100">
+            <span
+                class="font-display text-sm font-bold tracking-tight whitespace-nowrap text-stone-900 transition-colors duration-200 group-hover:text-accent-600 sm:text-base dark:text-stone-100 dark:group-hover:text-accent-400"
+            >
                 Saku Shiina
             </span>
-            <span class="jp-accent hidden sm:inline" lang="ja">椎名 朔</span>
+            <span
+                class="jp-accent hidden opacity-60 transition-opacity duration-300 group-hover:opacity-100 md:inline"
+                lang="ja"
+            >
+                椎名 朔
+            </span>
         </a>
 
-        <nav class="flex items-center gap-1" aria-label="Main">
+        <nav class="flex items-center gap-0.5 sm:gap-1" aria-label="Main">
             {menuItems.map((item) => (
                 <a
                     href={item.href}
                     aria-current={activePath === item.href ? "page" : undefined}
                     class:list={[
-                        "rounded-lg px-3.5 py-2 text-sm font-bold transition-colors",
+                        "rounded-lg px-2.5 py-2 text-[13px] font-bold whitespace-nowrap transition-colors sm:px-3.5 sm:text-sm",
                         activePath === item.href
                             ? "bg-accent-500/10 text-accent-600 dark:text-accent-400"
                             : "text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100",
@@ -54,8 +61,12 @@ const menuItems = [
                     {item.label}
                 </a>
             ))}
-            <SoundToggle client:only="vue" />
-            <ModeToggle client:only="vue" />
+            <span
+                class="mx-1 hidden h-5 w-px bg-stone-200/80 sm:block dark:bg-stone-800"
+                aria-hidden="true"
+            ></span>
+            <SoundToggle client:load />
+            <ThemeToggle client:load />
         </nav>
     </div>
 </header>

@@ -11,6 +11,7 @@ const recentPosts = posts.slice(0, 4);
 
 const tools = [
     { icon: "i-simple-icons-astro", name: "Astro" },
+    { icon: "i-simple-icons-svelte", name: "Svelte" },
     { icon: "i-simple-icons-vuedotjs", name: "Vue" },
     { icon: "i-simple-icons-typescript", name: "TypeScript" },
     { icon: "i-simple-icons-rust", name: "Rust" },
@@ -62,7 +63,7 @@ function formatDate(date: Date): string {
                     </p>
                     <p class="jp-accent mt-4 max-w-xl leading-loose" lang="ja">
                         フルスタックエンジニア。Astro・TypeScript・Rust・Go
-                        を使い、速くて静かなウェブプロダクトを作っています。
+                        を使い、速くて静かなWebプロダクトを作っています。
                     </p>
                     <div class="mt-9 flex flex-wrap items-center gap-4">
                         <a href="/blog/" class="btn-primary">
@@ -167,9 +168,8 @@ function formatDate(date: Date): string {
                         ship things that hold up.
                     </p>
                     <p class="body-copy">
-                        Off the clock I write about engineering here, tend to
-                        a slowly growing list of
-                        <a
+                        Off the clock I write about engineering here, tend to a
+                        slowly growing list of{" "}<a
                             href="/friends/"
                             class="link-wave font-bold text-accent-600 dark:text-accent-400"
                             >friends across the web</a

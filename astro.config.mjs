@@ -4,10 +4,11 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 
 import sitemap from "@astrojs/sitemap";
-import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import astroTakumi from "astro-takumi";
 import { renderOgImage } from "./src/lib/ogRenderer.tsx";
+
+import svelte from "@astrojs/svelte";
 
 // @ts-ignore
 const fontFile = (path) => fs.readFileSync(fileURLToPath(import.meta.resolve(path)));
@@ -20,7 +21,6 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap(),
-    vue(),
     astroTakumi({
       options: {
         fonts: [
@@ -61,20 +61,11 @@ export default defineConfig({
       },
       render: renderOgImage,
     }),
+    svelte(),
   ],
 
   vite: {
     plugins: [tailwindcss()],
-    resolve: {
-      dedupe: ["vue"],
-    },
-    optimizeDeps: {
-      // Keep vue out of the server dep optimizer — otherwise it serves
-      // @vue/runtime-core twice (raw + ?v= copies) and reka-ui's PopperRoot
-      // crashes in renderSlot during dev SSR/prerender. The Cloudflare
-      // adapter forwards this exclude to its server environments.
-      exclude: ["vue", "@vue/runtime-core", "@vue/server-renderer"],
-    },
   },
 
   markdown: {

@@ -40,6 +40,8 @@ const articlePublished = publishedTime?.toISOString();
 const articleModified = (modifiedTime ?? publishedTime)?.toISOString();
 const breadcrumbParts = path.split("/").filter(Boolean);
 
+const ogImage = getImagePath({ url: Astro.url, site: Astro.site, format: "webp" });
+
 const person = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -57,7 +59,7 @@ const person = {
   jobTitle: "Full-Stack Engineer",
   description: description,
   knowsLanguage: ["en", "ja"],
-  knowsAbout: ["Astro", "Rust", "Go", "Bun", "TypeScript", "Vue", "React", "Next.js", "Nuxt.js", "Web performance", "UI engineering"],
+  knowsAbout: ["Astro", "Svelte", "Rust", "Go", "Bun", "TypeScript", "Vue", "React", "Next.js", "Nuxt.js", "Web performance", "UI engineering"],
   email: "mailto:sakushiina@proton.me",
 };
 
@@ -118,11 +120,18 @@ const articleSchema =
         "@type": "Article",
         headline: title,
         description,
+        image: ogImage,
         datePublished: articlePublished,
         dateModified: articleModified,
         mainEntityOfPage: canonical,
         inLanguage: "en",
         author: authorRef,
+        publisher: {
+          "@type": "Person",
+          "@id": `${siteOrigin}/#person`,
+          name: siteName,
+        },
+        isAccessibleForFree: true,
         keywords: tags.join(", "),
         ...(wordCount && { wordCount }),
       }
@@ -151,8 +160,6 @@ const breadcrumbSchema =
     : null;
 
 const jsonLd = (data: object) => JSON.stringify(data).replace(/</g, "\\u003c");
-
-const ogImage = getImagePath({ url: Astro.url, site: Astro.site, format: "webp" });
 ---
 
 <title>{fullTitle}</title>
@@ -180,7 +187,11 @@ const ogImage = getImagePath({ url: Astro.url, site: Astro.site, format: "webp" 
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:image" content={ogImage} />
-<meta property="og:image:alt" content={`Portrait of ${siteName}`} />
+<meta
+  property="og:image:alt"
+  content={type === "article" ? `${title} — ${siteName}` : `Portrait of ${siteName}`}
+/>
+<meta name="twitter:image:alt" content={type === "article" ? `${title} — ${siteName}` : `Portrait of ${siteName}`} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 {type === "article" && articlePublished && <meta property="article:published_time" content={articlePublished} />}

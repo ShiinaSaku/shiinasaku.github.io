@@ -83,28 +83,6 @@
   mask-size: 100% 100%;
 }
 
-/* Map shadcn CSS vars to Tailwind color utilities. */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-}
-
 /*
  * Design tokens. Warm paper, ink, one vermilion accent.
  * Ciruela carries display type; Zen Maru Gothic covers Japanese.
@@ -223,7 +201,8 @@ html {
   color: #14120f;
 }
 
-/* Shiki dual-theme swap (config: vitesse-light / vitesse-dark). */
+/* Shiki dual-theme swap (config: vitesse-light / vitesse-dark).
+   !important required: Shiki writes inline `color: var(--shiki-light)` on spans. */
 .astro-code,
 .astro-code span {
   color: var(--shiki-light);
@@ -231,12 +210,12 @@ html {
 }
 .dark .astro-code,
 .dark .astro-code span {
-  color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 .astro-code {
   padding: 1.25rem 1.5rem;
-  border: 1px solid var(--border);
+  border: 1px solid #e7e5e4;
 }
 .dark .astro-code {
   border-color: rgba(231, 229, 228, 0.12);

@@ -1,25 +1,31 @@
 ---
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import FriendsGrid from "../../components/FriendsGrid.svelte";
 import { friends } from "../../lib/friends";
-import type { FriendLinkType } from "../../data/friends";
 import avatar from "../../assets/avatar.png";
 
-const linkIcons: Record<FriendLinkType, string> = {
-    website: "i-lucide-globe",
-    blog: "i-lucide-pencil-line",
-    github: "i-simple-icons-github",
-    twitter: "i-simple-icons-x",
-};
+const avatarFiles = import.meta.glob<{ default: ImageMetadata }>("/src/assets/friends/*", {
+    eager: true,
+});
 
-const linkColors: Record<FriendLinkType, string> = {
-    website:
-        "hover:border-sky-400/70 hover:text-sky-600 dark:hover:text-sky-400",
-    blog: "hover:border-accent-400/70 hover:text-accent-600 dark:hover:text-accent-400",
-    github: "hover:border-stone-500/70 hover:text-stone-900 dark:hover:text-stone-100",
-    twitter:
-        "hover:border-stone-500/70 hover:text-stone-900 dark:hover:text-stone-100",
-};
+// Optimize each friend avatar at build time, pass ready-made srcs to the island.
+const friendAvatars = await Promise.all(
+    friends.map(async (friend) => {
+        const meta = Object.entries(avatarFiles)
+            .find(([key]) => key.endsWith(`/${friend.avatarUrl}`))?.[1].default;
+        if (!meta) return friend.avatarUrl;
+        const optimized = await getImage({
+            src: meta,
+            width: 128,
+            height: 128,
+            quality: 85,
+            format: "webp",
+        });
+        return optimized.src;
+    }),
+);
 ---
 
 <BaseLayout
@@ -42,52 +48,8 @@ const linkColors: Record<FriendLinkType, string> = {
                 <p class="jp-accent mt-3" lang="ja">大切な人たちの記録。</p>
             </div>
 
-            <div class="stagger mt-14 flex flex-col gap-5">
-                {
-                    friends.map((friend) => (
-                        <div class="group flex flex-col gap-5 rounded-xl border hairline bg-white p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-400/50 hover:shadow-md sm:flex-row sm:items-center dark:bg-white/3 dark:hover:border-accent-400/40">
-                            <img
-                                src={friend.avatarUrl}
-                                alt={`${friend.name} avatar`}
-                                width={56}
-                                height={56}
-                                loading="lazy"
-                                decoding="async"
-                                class="size-14 shrink-0 rounded-full object-cover ring-2 ring-accent-500/30 transition-shadow duration-300 group-hover:ring-accent-500/60"
-                            />
-                            <div class="min-w-0 flex-1">
-                                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                    <p class="font-display text-lg font-bold text-stone-900 dark:text-stone-100">
-                                        {friend.name}
-                                    </p>
-                                    <span class="text-xs font-medium text-stone-400 dark:text-stone-600">
-                                        {friend.location}
-                                    </span>
-                                </div>
-                                <p class="mt-1.5 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-                                    {friend.description}
-                                </p>
-                            </div>
-                            <div class="flex shrink-0 items-center gap-2">
-                                {friend.links.map((link) => (
-                                    <a
-                                        href={link.url}
-                                        target="_blank"
-                                        rel="noreferrer noopener"
-                                        aria-label={`${friend.name} — ${link.type}`}
-                                        title={link.type}
-                                        class={`inline-flex size-9 items-center justify-center rounded-lg border hairline text-stone-400 transition-all duration-200 hover:-translate-y-0.5 dark:text-stone-500 ${linkColors[link.type]}`}
-                                    >
-                                        <span
-                                            class={`${linkIcons[link.type]} size-4`}
-                                            aria-hidden="true"
-                                        />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-                    ))
-                }
+            <div class="mt-14">
+                <FriendsGrid {friends} avatars={friendAvatars} client:load />
             </div>
 
             <div
