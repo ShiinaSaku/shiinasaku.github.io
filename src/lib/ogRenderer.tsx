@@ -55,7 +55,12 @@ function Chrome({ label, labelJp }: { label: string; labelJp: string }) {
           {label}
         </span>
         <span
-          style={{ fontFamily: "Site JP", fontSize: "18px", fontWeight: 700, color: STONE_FAINT }}
+          style={{
+            fontFamily: "Zen Maru Gothic",
+            fontSize: "18px",
+            fontWeight: 700,
+            color: STONE_FAINT,
+          }}
         >
           {labelJp}
         </span>
@@ -154,7 +159,7 @@ export const renderOgImage: RenderFunction = async ({ title, description, pathna
         justifyContent: "center",
         backgroundColor: PAPER,
         overflow: "hidden",
-        fontFamily: "Site Sans",
+        fontFamily: "Ciruela",
       }}
     >
       <Chrome label="SAKU SHIINA" labelJp="椎名 朔" />
@@ -192,7 +197,7 @@ export const renderOgImage: RenderFunction = async ({ title, description, pathna
             }}
           >
             Saku Shiina
-            <span style={{ fontFamily: "Site JP", fontSize: "56px", color: VERMILION }}>
+            <span style={{ fontFamily: "Zen Maru Gothic", fontSize: "56px", color: VERMILION }}>
               {" "}
               椎名 朔
             </span>
@@ -257,7 +262,7 @@ export const renderOgImage: RenderFunction = async ({ title, description, pathna
           left: "620px",
           width: "508px",
           textAlign: "right",
-          fontFamily: "Site JP",
+          fontFamily: "Zen Maru Gothic",
           fontSize: "18px",
           fontWeight: 700,
           color: STONE_FAINT,

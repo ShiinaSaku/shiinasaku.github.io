@@ -15,7 +15,7 @@
 
 <button
   type="button"
-  class="inline-flex size-9 cursor-pointer items-center justify-center rounded-lg text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+  class="relative inline-flex size-9 cursor-pointer items-center justify-center rounded-lg text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
   onclick={toggle}
   aria-label={enabled ? "Mute UI sounds" : "Unmute UI sounds"}
   aria-pressed={enabled}

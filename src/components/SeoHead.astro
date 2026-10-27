@@ -159,6 +159,18 @@ const breadcrumbSchema =
       }
     : null;
 
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    person,
+    websiteSchema,
+    organizationSchema,
+    blogSchema,
+    ...(articleSchema ? [articleSchema] : []),
+    ...(breadcrumbSchema ? [breadcrumbSchema] : []),
+  ],
+};
+
 const jsonLd = (data: object) => JSON.stringify(data).replace(/</g, "\\u003c");
 ---
 
@@ -202,9 +214,4 @@ const jsonLd = (data: object) => JSON.stringify(data).replace(/</g, "\\u003c");
     tags.map((tag) => <meta property="article:tag" content={tag} />)
 }
 
-<script is:inline type="application/ld+json" set:html={jsonLd(person)} />
-<script is:inline type="application/ld+json" set:html={jsonLd(websiteSchema)} />
-<script is:inline type="application/ld+json" set:html={jsonLd(organizationSchema)} />
-<script is:inline type="application/ld+json" set:html={jsonLd(blogSchema)} />
-{articleSchema && <script is:inline type="application/ld+json" set:html={jsonLd(articleSchema)} />}
-{breadcrumbSchema && <script is:inline type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />}
+<script is:inline type="application/ld+json" set:html={jsonLd(schemaGraph)} />

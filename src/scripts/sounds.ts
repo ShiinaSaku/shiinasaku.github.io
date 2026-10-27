@@ -16,7 +16,12 @@ const nameMap: Record<SoundName, Parameters<typeof playUISound>[0]> = {
   chime: "success",
 };
 
+let initialized = false;
+
 export function initSounds() {
+  if (initialized || typeof window === "undefined") return;
+  initialized = true;
+
   configureUISounds({
     feel: "glass",
     volume: 0.6,

@@ -1,7 +1,7 @@
 ---
 import { Picture } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollection, getEntry, render } from "astro:content";
+import { getCollection, render } from "astro:content";
 import { getReadingTimeMinutes, getWordCount } from "../../lib/readingTime";
 import ShareButton from "../../components/ShareButton.svelte";
 import ScrollProgress from "../../components/ScrollProgress.svelte";
@@ -10,31 +10,25 @@ import avatarImage from "../../assets/avatar.png";
 export const prerender = true;
 
 export async function getStaticPaths() {
-    const posts = await getCollection("blog", ({ data }) => !data.draft);
-    return posts.map((post) => ({
+    const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+        (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+    );
+    return posts.map((post, index) => ({
         params: { slug: post.id },
+        props: {
+            post,
+            olderPost: index < posts.length - 1 ? posts[index + 1] : null,
+            newerPost: index > 0 ? posts[index - 1] : null,
+        },
     }));
 }
 
+const { post, olderPost, newerPost } = Astro.props;
 const slug = Astro.params.slug;
-
-if (!slug) {
-    throw new Error("Missing blog slug parameter.");
-}
-
-const post = await getEntry("blog", slug);
 
 if (!post || post.data.draft) {
     return Astro.redirect("/404");
 }
-
-const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-const currentIndex = allPosts.findIndex((p) => p.id === slug);
-const olderPost =
-    currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
-const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 
 const { Content, headings } = await render(post);
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
@@ -103,7 +97,7 @@ const wordCount = getWordCount(body);
             <!-- Header -->
             <header class="mt-8 space-y-6 fade-in">
                 <h1
-                    class="font-serif text-4xl sm:text-5xl font-medium leading-[1.08] tracking-[-0.02em] text-stone-900 dark:text-stone-100 text-balance"
+                    class="font-display text-4xl sm:text-5xl font-medium leading-[1.08] tracking-[-0.02em] text-stone-900 dark:text-stone-100 text-balance"
                 >
                     {post.data.title}
                 </h1>
@@ -167,7 +161,7 @@ const wordCount = getWordCount(body);
                     />
                     <div class="flex-1">
                         <p
-                            class="font-serif text-lg font-medium text-stone-900 dark:text-stone-100"
+                            class="font-display text-lg font-medium text-stone-900 dark:text-stone-100"
                         >
                             Saku Shiina
                             <span class="jp-accent ml-1.5" lang="ja">椎名 朔</span>
@@ -201,7 +195,7 @@ const wordCount = getWordCount(body);
                                     />
                                     Previous
                                 </span>
-                                <p class="font-serif text-base font-medium leading-snug text-stone-900 dark:text-stone-100 transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
+                                <p class="font-display text-base font-medium leading-snug text-stone-900 dark:text-stone-100 transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
                                     {olderPost.data.title}
                                 </p>
                             </a>
@@ -220,7 +214,7 @@ const wordCount = getWordCount(body);
                                         aria-hidden="true"
                                     />
                                 </span>
-                                <p class="text-right font-serif text-base font-medium leading-snug text-stone-900 dark:text-stone-100 transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
+                                <p class="text-right font-display text-base font-medium leading-snug text-stone-900 dark:text-stone-100 transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
                                     {newerPost.data.title}
                                 </p>
                             </a>
@@ -236,8 +230,18 @@ const wordCount = getWordCount(body);
     <div class="h-20"></div>
 
     <!-- TOC scroll-spy -->
-    <script>const tocLinks = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
-        if (tocLinks.length > 0) {
+    <script>
+        let currentSpy: IntersectionObserver | null = null;
+
+        function setupTocSpy() {
+            if (currentSpy) {
+                currentSpy.disconnect();
+                currentSpy = null;
+            }
+
+            const tocLinks = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
+            if (tocLinks.length === 0) return;
+
             const ACTIVE = ["text-accent-600", "dark:text-accent-400", "border-accent-500", "dark:border-accent-400"];
             const setActive = (slug: string) => {
                 tocLinks.forEach((link) => {
@@ -246,10 +250,12 @@ const wordCount = getWordCount(body);
                     ACTIVE.forEach((c) => link.classList.toggle(c, isActive));
                 });
             };
+
             const headingEls = [...tocLinks]
                 .map((l) => document.getElementById(l.dataset.tocLink!))
                 .filter((el): el is HTMLElement => el !== null);
-            const spy = new IntersectionObserver(
+
+            currentSpy = new IntersectionObserver(
                 (entries) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) setActive(entry.target.id);
@@ -257,7 +263,10 @@ const wordCount = getWordCount(body);
                 },
                 { rootMargin: "-20% 0px -70% 0px" },
             );
-            headingEls.forEach((el) => spy.observe(el));
+            headingEls.forEach((el) => currentSpy?.observe(el));
         }
+
+        setupTocSpy();
+        document.addEventListener("astro:page-load", setupTocSpy);
     </script>
 </BaseLayout>

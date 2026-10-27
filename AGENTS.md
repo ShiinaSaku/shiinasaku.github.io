@@ -4,15 +4,15 @@ Personal Astro site (shiina.xyz). Static output, Svelte 5 islands, Tailwind v4 v
 
 ## Package manager
 
-Use `pnpm` for all commands. Lockfile of record is `pnpm-lock.yaml` (pinned via `devEngines`). CI (`.github/workflows/astro.yml`) uses bun — that is CI-only; do not "fix" it.
+Use `bun` for all commands. Lockfile of record is `bun.lock`.
 
 ## Commands
 
-- `pnpm dev` / `pnpm build` / `pnpm preview`
-- `pnpm lint` (oxlint), `pnpm lint:fix`
-- `pnpm format` (oxfmt), `pnpm fmt:check`
-- No test suite exists. `pnpm build` is the only verification gate (and the entire CI check) — run it before finishing any change.
-- Formatter/linter are oxlint + oxfmt, not ESLint/Prettier. Do not add them.
+- `bun dev` / `bun build` / `bun preview`
+- `bun lint` (oxlint), `bun run lint:fix`
+- `bun fmt`, `bun run fmt:check`
+- No test suite exists. `bun build` is the only verification gate (and the entire CI check) — run it before finishing any change.
+- Formatter is built-in `bun fmt`, linter is `oxlint`. Do not add ESLint/Prettier.
 
 ## Conventions
 

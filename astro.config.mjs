@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import mdx from "@astrojs/mdx";
 
 import sitemap from "@astrojs/sitemap";
@@ -18,6 +18,66 @@ export default defineConfig({
   output: "static",
   trailingSlash: "ignore",
 
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: "Ciruela",
+      cssVariable: "--font-ciruela",
+      fallbacks: ["sans-serif"],
+      options: {
+        variants: [
+          {
+            src: ["./src/assets/fonts/CiruelaDEMO-Regular.otf"],
+            weight: 400,
+            style: "normal",
+          },
+          {
+            src: ["./src/assets/fonts/CiruelaDEMO-Medium.otf"],
+            weight: 500,
+            style: "normal",
+          },
+          {
+            src: ["./src/assets/fonts/CiruelaDEMO-Bold.otf"],
+            weight: 700,
+            style: "normal",
+          },
+          {
+            src: ["./src/assets/fonts/CiruelaDEMO-ExtraBold.otf"],
+            weight: 800,
+            style: "normal",
+          },
+          {
+            src: ["./src/assets/fonts/CiruelaDEMO-Black.otf"],
+            weight: 900,
+            style: "normal",
+          },
+        ],
+      },
+    },
+    {
+      provider: fontProviders.local(),
+      name: "Zen Maru Gothic",
+      cssVariable: "--font-zen-maru-gothic",
+      optimizedFallbacks: false,
+      fallbacks: ["sans-serif"],
+      unicodeRange: ["U+3000-30FF, U+3041-30FC, U+4E00-9FFF, U+FF00-FF9F"],
+      options: {
+        variants: [
+          {
+            src: ["./src/assets/fonts/sitejp-400.woff2"],
+            weight: 400,
+            style: "normal",
+          },
+          {
+            src: ["./src/assets/fonts/sitejp-700.woff2"],
+            weight: 700,
+            style: "normal",
+          },
+        ],
+      },
+    },
+  ],
+
   integrations: [
     mdx(),
     sitemap(),
@@ -27,12 +87,12 @@ export default defineConfig({
           {
             name: "Ciruela",
             weight: 700,
-            data: fs.readFileSync("public/fonts/CiruelaDEMO-Bold.otf"),
+            data: fs.readFileSync("src/assets/fonts/CiruelaDEMO-Bold.otf"),
           },
           {
             name: "Ciruela",
             weight: 800,
-            data: fs.readFileSync("public/fonts/CiruelaDEMO-ExtraBold.otf"),
+            data: fs.readFileSync("src/assets/fonts/CiruelaDEMO-ExtraBold.otf"),
           },
           {
             name: "Zen Maru Gothic",

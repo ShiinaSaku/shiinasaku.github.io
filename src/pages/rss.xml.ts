@@ -11,6 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
     title: "Saku Shiina Blog",
     description: "Architecture, performance, UX, and SEO execution notes.",
     site: site?.toString() ?? "https://shiina.xyz",
+    customData: "<language>en</language>",
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,

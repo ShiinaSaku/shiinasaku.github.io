@@ -163,6 +163,8 @@
 
   @media (min-width: 640px) {
     .card {
+      flex-direction: row;
+      align-items: center;
       gap: 20px;
       padding: 24px;
     }
@@ -329,5 +331,20 @@
 
   :global(.dark) .link-btn:hover {
     color: color-mix(in srgb, var(--accent) 80%, #fff 20%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      animation: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .bubble,
+    .avatar,
+    .shine,
+    .link-btn {
+      transition: none !important;
+      transform: none !important;
+    }
   }
 </style>
